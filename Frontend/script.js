@@ -432,7 +432,7 @@ buttonChangeCurrency.addEventListener("click", function () {
     }
 });
 
-buttonCurrencies[0].addEventListener("click", function () {
+buttonCurrencies[0].addEventListener("click", async function () {
     divCurrencyOptions.style = "display: none;";
     buttonChangeCurrencyClicked = false;
     if (oldCurrency != "RON") {
@@ -440,18 +440,21 @@ buttonCurrencies[0].addEventListener("click", function () {
         currencyHTML.forEach(function (currency1) {
             currency1.innerText = currency;
         });
+        let rate;
         if (oldCurrency === "$") {
-            let newValue = parseFloat(spanBudgetValue.innerText) * 4.59892;
+            rate = await fetchExchangeRate("USD","RON");
+            let newValue = parseFloat(spanBudgetValue.innerText) * rate;
             spanBudgetValue.innerText = newValue.toFixed(2);
             user.expenses.forEach(function (expense) {
-                expense.sum = parseFloat(expense.sum) * 4.59892;
+                expense.sum = parseFloat(expense.sum) * rate;
             });
         }
         if (oldCurrency === "€") {
-            let newValue = parseFloat(spanBudgetValue.innerText) * 4.97347;
+            rate = await fetchExchangeRate("EUR","RON");
+            let newValue = parseFloat(spanBudgetValue.innerText) * rate;
             spanBudgetValue.innerText = newValue.toFixed(2);
             user.expenses.forEach(function (expense) {
-                expense.sum = parseFloat(expense.sum) * 4.97347;
+                expense.sum = parseFloat(expense.sum) * rate;
             });
         }
         dayClicked = false;
@@ -467,7 +470,7 @@ buttonCurrencies[0].addEventListener("click", function () {
     buttonChangeCurrency.classList.add('vertical-navbar-button');
 });
 
-buttonCurrencies[1].addEventListener("click", function () {
+buttonCurrencies[1].addEventListener("click", async function () {
     divCurrencyOptions.style = "display: none;";
     buttonChangeCurrencyClicked = false;
     if (oldCurrency != "$") {
@@ -475,19 +478,22 @@ buttonCurrencies[1].addEventListener("click", function () {
         currencyHTML.forEach(function (currency1) {
             currency1.innerText = currency;
         });
+        let rate;
         if (oldCurrency === "RON") {
-            let newValue = parseFloat(spanBudgetValue.innerText) / 4.59892;
+            rate = await fetchExchangeRate("RON","USD");
+            let newValue = parseFloat(spanBudgetValue.innerText) * rate;
             spanBudgetValue.innerText = newValue.toFixed(2);
             user.expenses.forEach(function (expense) {
-                expense.sum = parseFloat(expense.sum) / 4.59892;
+                expense.sum = parseFloat(expense.sum) * rate;
 
             });
         }
         if (oldCurrency === "€") {
-            let newValue = parseFloat(spanBudgetValue.innerText) / 0.924737;
+            rate = await fetchExchangeRate("EUR","USD");
+            let newValue = parseFloat(spanBudgetValue.innerText) * rate;
             spanBudgetValue.innerText = newValue.toFixed(2);
             user.expenses.forEach(function (expense) {
-                expense.sum = parseFloat(expense.sum) / 0.924737;
+                expense.sum = parseFloat(expense.sum) * rate;
             });
         }
         dayClicked = false;
@@ -503,7 +509,7 @@ buttonCurrencies[1].addEventListener("click", function () {
     buttonChangeCurrency.classList.add('vertical-navbar-button');
 });
 
-buttonCurrencies[2].addEventListener("click", function () {
+buttonCurrencies[2].addEventListener("click", async function () {
     divCurrencyOptions.style = "display: none;";
     buttonChangeCurrencyClicked = false;
     if (oldCurrency != "€") {
@@ -511,18 +517,21 @@ buttonCurrencies[2].addEventListener("click", function () {
         currencyHTML.forEach(function (currency1) {
             currency1.innerText = currency;
         });
+        let rate;
         if (oldCurrency === "RON") {
-            let newValue = parseFloat(spanBudgetValue.innerText) / 4.97347;
+            rate = await fetchExchangeRate("RON","EUR");
+            let newValue = parseFloat(spanBudgetValue.innerText) * rate;
             spanBudgetValue.innerText = newValue.toFixed(2);
             user.expenses.forEach(function (expense) {
-                expense.sum = parseFloat(expense.sum) / 4.97347;
+                expense.sum = parseFloat(expense.sum) * rate;
             });
         }
         if (oldCurrency === "$") {
-            let newValue = parseFloat(spanBudgetValue.innerText) * 0.924737;
+            rate = await fetchExchangeRate("USD","EUR");
+            let newValue = parseFloat(spanBudgetValue.innerText) * rate;
             spanBudgetValue.innerText = newValue.toFixed(2);
             user.expenses.forEach(function (expense) {
-                expense.sum = parseFloat(expense.sum) * 0.924737;
+                expense.sum = parseFloat(expense.sum) * rate;
             });
         }
         dayClicked = false;
@@ -1279,10 +1288,10 @@ async function saveAllExpensesInDatabase(expenses) {
         if (response.ok) {
             return response;
         } else {
-            console.error("Failed to delete expense:", response.status)
+            console.error("Failed to update expenses:", response.status)
         }
     } catch (error) {
-        console.error('Error deleting expense:', error);
+        console.error('Error updating expenses:', error);
         throw error;
     }
 }
@@ -1346,6 +1355,34 @@ async function deleteCategoryFromDatabase(id) {
         }
     } catch (error) {
         console.error('Error deleting category:', error);
+        throw error;
+    }
+}
+
+
+
+/* ------------------------------------------------------------------------------------ */
+
+/* Exchange rates api calls */
+
+/* ------------------------------------------------------------------------------------ */
+
+async function fetchExchangeRate(fromCurrency, toCurrency) {
+    try {
+        const url = `https://api.exchangerate-api.com/v4/latest/${fromCurrency}`;
+        const response = await fetch(url, {
+            method: "GET"
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to retrieve exchange rate data");
+        }
+
+        const exchangeRate = await response.json();
+        return exchangeRate.rates[toCurrency];
+    
+    } catch (error) {
+        console.error("Error fetching exchange rate:", error);
         throw error;
     }
 }
