@@ -7,12 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ro.expensestracker.dto.AuthResponseDto;
-import ro.expensestracker.dto.ResponseDto;
 import ro.expensestracker.dto.UserDto;
 import ro.expensestracker.service.AuthService;
 
 @RestController
-@Validated
 @RequestMapping("/api/authentication")
 public class AuthController {
 
@@ -24,7 +22,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ResponseDto> register(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<String> register(@Valid @RequestBody UserDto userDto) {
         return authService.register(userDto);
     }
 
