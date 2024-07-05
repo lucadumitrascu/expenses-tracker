@@ -13,7 +13,7 @@ form {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 input[type="text"],
 input[type="email"],
@@ -62,4 +62,24 @@ input[type="submit"]:hover {
     color: red;
     align-self: center;
     text-align: center;
+}
+
+
+.password-box {
+    width: 500px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+}
+
+.input-password {
+   outline: none;
+   border: none;
+   width: 100%;
+}
+
+i {
+   position: relative;
+   cursor: pointer;
+   margin-left: -35px;  
 }

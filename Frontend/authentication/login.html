@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="login-register-css.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
 <body>
 
@@ -15,7 +16,11 @@
     <input type="text" id="username" name="username" required>
 
     <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
+
+    <div class="password-box">
+        <input type="password" id="password" class="input-password" name="password" required>
+        <i id="icon-show-hide-password" class="fa-regular fa-eye"></i>
+    </div>
 
     <div class="div-buttons" id="div-buttons">
         <input id="btn-submit-login" type="submit" value="Login">

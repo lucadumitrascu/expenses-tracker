@@ -49,3 +49,18 @@ function showError() {
         spanError.remove(); 
     }, 5000);
 }
+
+let icon = document.getElementById("icon-show-hide-password");
+let passwordField = document.getElementById("password");
+
+icon.addEventListener("click", function() {
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        passwordField.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+});
