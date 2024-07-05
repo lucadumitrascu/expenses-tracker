@@ -24,9 +24,6 @@ submitRegisterForm.addEventListener("submit", async function(event) {
             );
 
             if (response.ok) {
-                // Send user email in index.html
-                localStorage.setItem("userEmail", email);
-                // Redirect to success page if authentication is successful
                 window.location.href = "login.html"; 
             } else {
                 const errorData = await response.text();

@@ -43,7 +43,7 @@ let divButtons = document.getElementById("div-buttons");
 
 function showError() {
     spanError.classList.add('span-error'); 
-    spanError.innerText = "Email or password are incorrect!"; 
+    spanError.innerText = "Incorrect username or password!"; 
     submitLoginForm.insertBefore(spanError, divButtons); 
     setTimeout(function () {
         spanError.remove(); 
