@@ -31,20 +31,34 @@ public class CategoryService {
 
     public ResponseEntity<CategoryDto> createCategory(CategoryDto categoryDto) {
         Category category = CategoryMapper.toCategory(categoryDto);
-        category.setUser(getAuthenticatedUser());
+
+        User authenticatedUser = getAuthenticatedUser();
+        if (authenticatedUser == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        category.setUser(authenticatedUser);
         Category categoryWithUpdatedId = categoryRepository.save(category);
         categoryDto.setId(categoryWithUpdatedId.getId());
-        return new ResponseEntity<>(categoryDto,HttpStatus.CREATED);
+
+        return new ResponseEntity<>(categoryDto, HttpStatus.CREATED);
     }
 
     public ResponseEntity<String> deleteCategory(Long id) {
+        Optional<Category> categoryOptional = categoryRepository.findById(id);
+        if (categoryOptional.isEmpty()) {
+            return new ResponseEntity<>("Category not found!", HttpStatus.NOT_FOUND);
+        }
+
         categoryRepository.deleteById(id);
-        return new ResponseEntity<>("Category was deleted successfully!",HttpStatus.OK);
+        return new ResponseEntity<>("Category was deleted successfully!", HttpStatus.OK);
     }
 
     public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<User> userOptional = userRepository.findByUsername(authentication.getName());
-        return userOptional.orElse(null);
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        return userRepository.findByUsername(authentication.getName()).orElse(null);
     }
 }

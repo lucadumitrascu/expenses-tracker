@@ -3,6 +3,7 @@ package ro.expensestracker.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 import ro.expensestracker.entity.Category;
 import ro.expensestracker.entity.Expense;
 
@@ -18,6 +19,7 @@ public class UserDto {
     private String email;
     @NotEmpty(message = "You have to enter a password!")
     private String password;
+    @Positive(message = "Budget must be positive")
     private BigDecimal budget;
     private String currency;
     private List<Expense> expenses;

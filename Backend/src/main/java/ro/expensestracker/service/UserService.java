@@ -26,11 +26,12 @@ public class UserService {
 
     // Get user details for current authenticated user
     public ResponseEntity<UserDto> getUserDetails() {
-        UserDto userDto = UserMapper.toUserDto(getAuthenticatedUser());
-        if (userDto != null) {
+        User user = getAuthenticatedUser();
+        if (user != null) {
+            UserDto userDto = UserMapper.toUserDto(user);
             return new ResponseEntity<>(userDto, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(userDto, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

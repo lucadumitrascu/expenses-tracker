@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ro.expensestracker.dto.AuthResponseDto;
+import ro.expensestracker.dto.PasswordResetDto;
 import ro.expensestracker.dto.UserDto;
 import ro.expensestracker.service.AuthService;
 
@@ -29,5 +30,15 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody UserDto userDto) {
         return authService.login(userDto);
+    }
+
+    @PutMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody String email) {
+        return authService.forgotPassword(email);
+    }
+
+    @PutMapping("/set-new-password")
+    public ResponseEntity<String> setNewPassword(@RequestBody PasswordResetDto passwordResetDto) {
+        return authService.setNewPassword(passwordResetDto.getEmail(), passwordResetDto.getPassword());
     }
 }

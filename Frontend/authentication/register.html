@@ -1,36 +1,40 @@
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="login-register-css.css">
     <title>Expenses Tracker</title>
 </head>
+
 <body>
-<h1 class="title">Expenses Tracker</h1>
+    <div class="div-container">
+        <h1 class="title">Expenses Tracker</h1>
 
-<form id="form-register" action="index.html" method="post">
-    <h2>Register</h2>
+        <form id="form-register" action="index.html" method="post">
+            <h2>Register</h2>
 
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
 
-    <label for="confirm-password">Confirm Password:</label>
-    <input type="password" id="confirm-password" name="confirm-password" required>
+            <label for="confirm-password">Confirm Password:</label>
+            <input type="password" id="confirm-password" name="confirm-password" required>
 
-    <div id="div-buttons" class="div-buttons">
-        <input id="btn-submit-register" type="submit" value="Register">
-        <button id="btn-login" class="btn-login">Login</button>
+            <div id="div-buttons" class="div-buttons">
+                <input id="btn-submit-register" type="submit" value="Register">
+                <button id="btn-login" class="btn-login">Login</button>
+            </div>
+        </form>
     </div>
-</form>
-
-<script src="register.js"></script>
+    <script src="register.js"></script>
 
 </body>
+
 </html>

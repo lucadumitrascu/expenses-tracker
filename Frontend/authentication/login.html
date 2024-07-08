@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,29 +8,35 @@
     <link rel="stylesheet" href="login-register-css.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
+
 <body>
-<h1 class="title">Expenses Tracker</h1>
+    <div class="div-container">
+        <h1 class="title">Expenses Tracker</h1>
 
-<form id="form-login" action="index.html" method="post">
-    <h2>Login</h2>
-    
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
+        <form id="form-login" action="index.html" method="post">
+            <h2>Login</h2>
 
-    <label class="label-password" for="password"><p>Password:</p> <p></p> <p class="p-forgot-password">Forgot Password?</p></label>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
 
-    <div class="password-box">
-        <input type="password" id="password" class="input-password" name="password" required>
-        <i id="icon-show-hide-password" class="fa-regular fa-eye" style="color:grey"></i>
+            <label class="label-password" for="password">
+                <p>Password:</p>
+                <p id="p-forgot-password" class="p-forgot-password">Forgot Password?</p>
+            </label>
+
+            <div class="password-box">
+                <input type="password" id="password" class="input-password" name="password" required>
+                <i id="icon-show-hide-password" class="fa-regular fa-eye" style="color:grey"></i>
+            </div>
+
+            <div class="div-buttons" id="div-buttons">
+                <input id="btn-submit-login" type="submit" value="Login">
+                <button id="btn-register" class="btn-register">Register</button>
+            </div>
+        </form>
     </div>
-
-    <div class="div-buttons" id="div-buttons">
-        <input id="btn-submit-login" type="submit" value="Login">
-        <button id="btn-register" class="btn-register">Register</button>
-    </div>
-</form>
-
-<script src="login.js"></script>
+    <script src="login.js"></script>
 
 </body>
+
 </html>

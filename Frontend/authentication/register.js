@@ -1,10 +1,9 @@
 let submitRegisterForm = document.getElementById("form-register");
-let email;
 
-submitRegisterForm.addEventListener("submit", async function(event) {
+submitRegisterForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    email = document.getElementById("email").value;
+    let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
     let confirmPassword = document.getElementById("confirm-password").value;
     let username = document.getElementById("username").value;
@@ -24,7 +23,7 @@ submitRegisterForm.addEventListener("submit", async function(event) {
             );
 
             if (response.ok) {
-                window.location.href = "login.html"; 
+                window.location.href = "login.html";
             } else {
                 const errorData = await response.text();
                 showError(errorData);
@@ -37,18 +36,20 @@ submitRegisterForm.addEventListener("submit", async function(event) {
     }
 });
 
-document.getElementById("btn-login").addEventListener("click", function(){
+document.getElementById("btn-login").addEventListener("click", function () {
     window.location.href = "login.html";
 });
 
+
+//Show error message
 let spanError = document.createElement('span');
 let divButtons = document.getElementById("div-buttons");
 
 function showError(message) {
-    spanError.classList.add('span-error'); 
-    spanError.innerText = message; 
-    submitRegisterForm.insertBefore(spanError, divButtons); 
+    spanError.classList.add('span-error');
+    spanError.innerText = message;
+    submitRegisterForm.insertBefore(spanError, divButtons);
     setTimeout(function () {
-        spanError.remove(); 
+        spanError.remove();
     }, 5000);
 }

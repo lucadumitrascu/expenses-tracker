@@ -1,7 +1,7 @@
 let submitLoginForm = document.getElementById("form-login");
 let username;
 
-submitLoginForm.addEventListener("submit", async function(event) {
+submitLoginForm.addEventListener("submit", async function (event) {
     // Prevent form from submitting normally
     event.preventDefault();
 
@@ -24,36 +24,40 @@ submitLoginForm.addEventListener("submit", async function(event) {
         if (response.status === 200) {
             const responseData = await response.json();
             localStorage.setItem("accessToken", responseData.accessToken);
-            window.location.href = "../index.html"; 
+            window.location.href = "../index.html";
         } else {
             const errorData = await response.json();
-            showError();   
+            showError();
         }
     } catch (error) {
-        showError();  
+        showError();
     }
 });
 
-document.getElementById("btn-register").addEventListener("click", function(){
-window.location.href = "register.html";
+document.getElementById("btn-register").addEventListener("click", function () {
+    window.location.href = "register.html";
 });
 
+
+//Show error message
 let spanError = document.createElement('span');
 let divButtons = document.getElementById("div-buttons");
 
 function showError() {
-    spanError.classList.add('span-error'); 
-    spanError.innerText = "Incorrect username or password!"; 
-    submitLoginForm.insertBefore(spanError, divButtons); 
+    spanError.classList.add('span-error');
+    spanError.innerText = "Incorrect username or password!";
+    submitLoginForm.insertBefore(spanError, divButtons);
     setTimeout(function () {
-        spanError.remove(); 
+        spanError.remove();
     }, 5000);
 }
 
+
+// Show / hide password
 let icon = document.getElementById("icon-show-hide-password");
 let passwordField = document.getElementById("password");
 
-icon.addEventListener("click", function() {
+icon.addEventListener("click", function () {
     if (passwordField.type === "password") {
         passwordField.type = "text";
         icon.classList.remove("fa-eye");
@@ -63,4 +67,11 @@ icon.addEventListener("click", function() {
         icon.classList.remove("fa-eye-slash");
         icon.classList.add("fa-eye");
     }
+});
+
+
+// Forgot password
+let buttonForgotPassword = document.getElementById("p-forgot-password");
+buttonForgotPassword.addEventListener("click", function () {
+    window.location.href = "forgot-password.html";
 });

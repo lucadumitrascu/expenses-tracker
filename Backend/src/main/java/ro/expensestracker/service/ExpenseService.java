@@ -35,13 +35,14 @@ public class ExpenseService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         Optional<User> currentUserOptional = userRepository.findByUsername(currentUsername);
+
         if (currentUserOptional.isPresent()) {
             User currentUser = currentUserOptional.get();
             expense.setUser(currentUser);
             Expense savedExpense = expenseRepository.save(expense);
             return new ResponseEntity<>(ExpenseMapper.toExpenseDto(savedExpense), HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(expenseDto, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -52,25 +53,22 @@ public class ExpenseService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         Optional<User> currentUserOptional = userRepository.findByUsername(currentUsername);
+
         if (currentUserOptional.isPresent()) {
             User currentUser = currentUserOptional.get();
             expense.setUser(currentUser);
             return new ResponseEntity<>(expenseDto, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(expenseDto, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     public ResponseEntity<ExpenseDto> deleteExpense(Long id) {
-        ExpenseDto expenseDto = new ExpenseDto();
         if (expenseRepository.findById(id).isPresent()) {
-            expenseDto = ExpenseMapper.toExpenseDto(expenseRepository.findById(id).get());
-        }
-        if (expenseDto.getId() != 0) {
             expenseRepository.deleteById(id);
-            return new ResponseEntity<>(expenseDto, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(expenseDto, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -82,9 +80,9 @@ public class ExpenseService {
                 expense.setSum(expenseDto.getSum());
                 expenseRepository.save(expense);
             } else {
-                System.out.println("Invalid expense with ID: " + expenseDto.getId());
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
-        return new ResponseEntity<>("All expenses updated successfully!", HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

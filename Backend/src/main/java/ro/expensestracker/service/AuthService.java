@@ -1,7 +1,10 @@
 package ro.expensestracker.service;
 
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,8 +22,7 @@ import ro.expensestracker.repository.UserRepository;
 import ro.expensestracker.security.JwtTokenGenerator;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class AuthService {
@@ -30,17 +32,20 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenGenerator jwtTokenGenerator;
     private final CategoryRepository categoryRepository;
+    private final JavaMailSender javaMailSender;
 
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        AuthenticationManager authenticationManager,
                        JwtTokenGenerator jwtTokenGenerator,
-                       CategoryRepository categoryRepository) {
+                       CategoryRepository categoryRepository,
+                       JavaMailSender javaMailSender) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtTokenGenerator = jwtTokenGenerator;
         this.categoryRepository = categoryRepository;
+        this.javaMailSender = javaMailSender;
     }
 
     public ResponseEntity<String> register(UserDto userDto) {
@@ -82,6 +87,55 @@ public class AuthService {
             return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
         } catch (AuthenticationException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    public ResponseEntity<String> forgotPassword(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            int securityCode = generateSecurityCode();
+
+            String subject = "Your Security Code";
+            String body = "Hello " + user.getUsername() + ",\n\nYour security code is: " + securityCode;
+            sendEmail(email, subject, body);
+
+            return new ResponseEntity<>(securityCode + "", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Email not found!", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private int generateSecurityCode() {
+        Random random = new Random();
+        // The number should be 6 digit length
+        // This return ensures the number is between 100.000 and 999.999
+        return 100000 + random.nextInt(900000);
+    }
+
+    private void sendEmail(String to, String subject, String body) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom("expensestrackerapplication@gmail.com", "Expenses Tracker");
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(body);
+            javaMailSender.send(message);
+        } catch (Exception e) {
+            System.err.println("Error sending email: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<String> setNewPassword(String email, String password) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setPassword(passwordEncoder.encode(password));
+            userRepository.save(user);
+            return new ResponseEntity<>("Password changed successfully!", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Email not found!", HttpStatus.NOT_FOUND);
         }
     }
 }
