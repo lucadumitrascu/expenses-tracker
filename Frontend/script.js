@@ -40,6 +40,7 @@ let statisticsProgress = document.querySelectorAll('.progress');
 let statisticsAmount = document.querySelectorAll('.statistics-amount');
 let statisticsCategory = document.querySelectorAll('.category-name');
 let spanPeriodStatistics = document.getElementById("span-period");
+let maxWidthProgress = 500;
 /* Total money spent in statistics */
 let totalMoneySpent = document.getElementById("span-total");
 /* Middle section */
@@ -394,7 +395,10 @@ function deleteCategory(id, name) {
             numberOfCategories--;
         
             user.categories = user.categories.filter(cat => cat.name !== name);
-        
+            user.expenses = user.expenses.filter(exp => exp.category !== name);
+            dayClicked = false;
+            buttonDay.click();
+            
             for (let i = 0; i < numberOfCategories; i++) {
                 createNewCategory(user.categories[i].name);
             }
@@ -563,12 +567,12 @@ buttonChangeBudget.addEventListener("click", function () {
         oldBudgetValue = parseFloat(spanBudgetValue.innerText);
 
         // Append "editable" styles
-        buttonChangeBudget.style = "color: palegreen;font-weight: bold; border: 1px solid white;";
-        buttonChangeBudget.innerHTML = "<i class='fa fa-usd'style='margin-right: 13px; margin-left: 5px;'></i>Save Budget";
+        buttonChangeBudget.style = "color: palegreen; font-weight: bold; border: 1px solid white;";
+        buttonChangeBudget.innerHTML = "<i class='fa fa-usd' style='margin-right: 13px; margin-left: 5px;'></i>Save Budget";
 
         spanBudgetText.innerHTML = "Edit Budget: ";
 
-        spanBudgetValue.style = "color: grey; border: 1px solid green";
+        spanBudgetValue.style = "color: green; border: 0.25px solid rgb(28, 48, 162); border-radius: 3px";
         spanBudgetValue.contentEditable = true;
 
         spanBudgetValue.addEventListener("keydown", function (event) {
@@ -581,14 +585,25 @@ buttonChangeBudget.addEventListener("click", function () {
             let isBackspace = (keyCode === "Backspace");
             let isArrowLeft = (keyCode === "ArrowLeft");
             let isArrowRight = (keyCode === "ArrowRight");
+            let isPeriod = (keyCode === "Period");
 
             if (isEnter) {
                 event.preventDefault();
             }
-            if (!isDigit && !isBackspace && !isArrowLeft && !isArrowRight) {
+            if (!isDigit && !isBackspace && !isArrowLeft && !isArrowRight && !isPeriod) {
                 event.preventDefault();
             }
-            if (spanBudgetValue.innerText.length > 5 && !isBackspace && !isArrowLeft && !isArrowRight) {
+            if (spanBudgetValue.innerText.length > 5 && !isBackspace && !isArrowLeft && !isArrowRight && !isPeriod) {
+                if(!spanBudgetValue.innerText.includes(".")) {
+                    event.preventDefault();
+                }
+                // Add 3 more characters for ".00"
+                else if (spanBudgetValue.innerText.length > 8) {
+                    event.preventDefault();
+                }
+            }
+
+            if(isPeriod && spanBudgetValue.innerText.includes(".")) {
                 event.preventDefault();
             }
         });
@@ -597,7 +612,10 @@ buttonChangeBudget.addEventListener("click", function () {
         buttonChangeBudgetClicked = false;
 
         newBudgetValue = spanBudgetValue.innerText;
-        if (newBudgetValue === "" || parseFloat(newBudgetValue) === 0 || parseFloat(oldBudgetValue) === parseFloat(newBudgetValue)) {
+        if (newBudgetValue === "" || parseFloat(newBudgetValue) === 0 
+            || parseFloat(oldBudgetValue) === parseFloat(newBudgetValue) 
+            || newBudgetValue[newBudgetValue.length-1] === "."
+            || newBudgetValue[0] === ".") {
             spanBudgetValue.innerText = oldBudgetValue;
         }
         else {
@@ -649,7 +667,8 @@ buttonAddCategory.addEventListener("click", function () {
 
 function createDivAddNewCategory() {
     divAddNewCategory.classList.add('div-add-new-category');
-    divAddNewCategory.style = "display: flex; justify-content:center;"
+    divAddNewCategory.style = "display: flex;";
+
     spanAddNewCategory.innerText = "Add New Category";
     spanAddNewCategory.classList.add('span-add-new-category');
     divAddNewCategory.appendChild(spanAddNewCategory);
@@ -660,13 +679,12 @@ function createDivAddNewCategory() {
     inputNewCategory.type = "text";
     inputNewCategory.maxLength = 10;
     inputNewCategory.name = "category";
-    inputNewCategory.style.marginTop = "20px";
+    inputNewCategory.style = "margin-top: 10px;"
     formAddNewCategory.appendChild(inputNewCategory);
 
     buttonAddNewCategory.classList.add('button-add-new-category');
     buttonAddCategory.type = "submit";
     buttonAddNewCategory.innerText = "+";
-    buttonAddNewCategory.style = "margin:20px;"
     formAddNewCategory.appendChild(buttonAddNewCategory);
 
     formAddNewCategory.style = "display: flex; flex-direction: column;";
@@ -1021,18 +1039,28 @@ function calculateStatistics(expenses) {
 
     if (total === 0) {
         for (let i = 0; i < numberOfCategories; i++) {
-            statisticsProgress[i].innerHTML = "0%";
             statisticsProgress[i].style.width = "0px";
         }
     }
     else {
 
         let percentage = 0;
-
         for (let i = 0; i < numberOfCategories; i++) {
             percentage = categorySumVector[i] / total * 100;
-            statisticsProgress[i].innerHTML = Math.round(percentage) + "%";
-            statisticsProgress[i].style.width = percentage.toFixed(2) / 100 * 500 + "px";
+            if(Math.round(percentage === 0)) {
+                statisticsProgress[i].style.width = percentage.toFixed(2) / 100 * 500 + "px";
+            }
+            else {
+                if (Math.round(percentage) < 6) {
+                    statisticsProgress[i].innerHTML = Math.round(percentage) + "%";
+                    percentage = 6;
+                    statisticsProgress[i].style.width = percentage.toFixed(2) / 100 *  maxWidthProgress + "px";
+                }
+                else {
+                    statisticsProgress[i].innerHTML = Math.round(percentage) + "%";
+                    statisticsProgress[i].style.width = percentage.toFixed(2) / 100 * maxWidthProgress + "px";
+                }
+            }
         }
     }
 }

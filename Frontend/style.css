@@ -96,7 +96,11 @@ body {
     font-weight: bold;
 }
 
-/* Add new expense (middle) */
+.div-username {
+    margin: 5px;
+}
+
+/* Add new expense AND Add new category (middle) */
 
 .div-add-new-expense,
 .div-add-new-category {
@@ -109,7 +113,6 @@ body {
     border-radius: 10px;
     padding: 20px;
     width: 480px;
-
 }
 
 .span-insufficient-funds,
@@ -119,8 +122,6 @@ body {
     font-weight: bold;
     font-size: 20px;
     color: red;
-    margin-bottom: 10px;
-
 }
 
 .span-budget-text,
@@ -175,6 +176,10 @@ body {
     height: 70px;
     border-radius: 50px;
     align-self: center;
+}
+
+.button-add-new-category {
+    margin:20px;
 }
 
 .button-add-new-expense:hover,

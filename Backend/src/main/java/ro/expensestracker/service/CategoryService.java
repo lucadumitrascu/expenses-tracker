@@ -11,6 +11,7 @@ import ro.expensestracker.entity.Category;
 import ro.expensestracker.entity.User;
 import ro.expensestracker.mapper.CategoryMapper;
 import ro.expensestracker.repository.CategoryRepository;
+import ro.expensestracker.repository.ExpenseRepository;
 import ro.expensestracker.repository.UserRepository;
 
 import java.util.Optional;
@@ -19,13 +20,16 @@ import java.util.Optional;
 public class CategoryService {
 
     CategoryRepository categoryRepository;
+    ExpenseRepository expenseRepository;
     UserRepository userRepository;
 
     @Autowired
     public CategoryService(CategoryRepository categoryRepository,
-                           UserRepository userRepository) {
+                           UserRepository userRepository,
+                           ExpenseRepository expenseRepository) {
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
+        this.expenseRepository = expenseRepository;
     }
 
 
@@ -50,7 +54,10 @@ public class CategoryService {
             return new ResponseEntity<>("Category not found!", HttpStatus.NOT_FOUND);
         }
 
+        Category category = categoryOptional.get();
+        expenseRepository.deleteByCategoryName(category.getName());
         categoryRepository.deleteById(id);
+
         return new ResponseEntity<>("Category was deleted successfully!", HttpStatus.OK);
     }
 
