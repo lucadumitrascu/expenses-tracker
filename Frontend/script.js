@@ -38,14 +38,18 @@ let spanBudgetValue = document.getElementById('span-budget-value');
 /* Statistics and categories */
 let statisticsProgress = document.querySelectorAll('.progress');
 let statisticsAmount = document.querySelectorAll('.statistics-amount');
-let statisticsCategory = document.querySelectorAll('.category-name');
+let statisticsCategory = document.querySelectorAll('.statistics-category-name');
 let spanPeriodStatistics = document.getElementById("span-period");
-let maxWidthProgress = 500;
+let divStatisticsPercentage = document.getElementById('div-statistics');
+let maxWidthProgress = 400;
+let pieChart;
+let canvasPieChart = document.getElementById('canvas-pie-chart');
+let divPieChart = document.getElementById('div-pie-chart');
 /* Total money spent in statistics */
 let totalMoneySpent = document.getElementById("span-total");
 /* Middle section */
 let divAddNewExpense = document.getElementById('div-add-new-expense');
-let divStatistics = document.getElementById('div-statistics');
+let divGroupStatistics = document.getElementById('div-group-statistics');
 let divGroupMiddleSections = document.getElementById('div-group-middle-sections');
 let errorMessageSet = false;
 /* Change currency */
@@ -146,11 +150,12 @@ if (userData != null) {
 
 let buttonHome = document.getElementById('button-home');
 buttonHome.addEventListener("click", function () {
+    buttonHome.click();
     dayClicked = false;
     buttonDay.click();
 
     divAddNewExpense.style.display = "block";
-    divStatistics.style.display = "flex";
+    divGroupStatistics.style.display = "flex";
 
     /* Add new category */
     formAddNewCategory.reset();
@@ -177,7 +182,7 @@ buttonSeeExpenses.addEventListener('click', function () {
     divExpenses.style.display = "flex";
     titleExpensesCategories.style.display = "block";
 
-    divStatistics.style.display = "none";
+    divGroupStatistics.style.display = "none";
     divAddNewExpense.style.display = "none";
 
     divCategories.style.display = "none";
@@ -239,15 +244,15 @@ function createExpense() {
 
         let category = document.createElement('div');
         category.textContent = `${expense.category}`;
-        category.classList.add('expense-category');
+        category.classList.add('expense-category-see-expenses');
 
         let sum = document.createElement('div');
         sum.textContent = `${expense.sum.toFixed(2)}`;
-        sum.classList.add('expense-sum');
+        sum.classList.add('expense-sum-see-expenses');
 
         let date = document.createElement('div');
         date.textContent = `${expense.date}`;
-        date.classList.add('expense-date');
+        date.classList.add('expense-date-see-expenses');
 
         let action = document.createElement('div');
         let deleteButton = document.createElement('button');
@@ -256,7 +261,7 @@ function createExpense() {
             deleteExpense(expense.id);
         });
         action.appendChild(deleteButton);
-        action.classList.add('expense-action');
+        action.classList.add('expense-action-see-expenses');
 
         card.appendChild(category);
         card.appendChild(sum);
@@ -305,7 +310,7 @@ buttonSeeCategories.addEventListener('click', function () {
     titleExpensesCategories.style.display = "block";
     divCategories.style.display = "block";
 
-    divStatistics.style.display = "none";
+    divGroupStatistics.style.display = "none";
     divAddNewExpense.style.display = "none";
 
     divExpenses.style.display = "none";
@@ -387,23 +392,23 @@ function deleteCategory(id, name) {
         if (result.isConfirmed) {
             let divIndividualStatistics = document.querySelectorAll(".div-individual-statistics");
             let categoryOption = document.querySelectorAll(".form-input-category-option");
-        
+
             for (let i = 0; i < numberOfCategories; i++) {
                 divIndividualStatistics[i].remove();
                 categoryOption[i + 1].remove();
             }
             numberOfCategories--;
-        
+
             user.categories = user.categories.filter(cat => cat.name !== name);
             user.expenses = user.expenses.filter(exp => exp.category !== name);
-            dayClicked = false;
-            buttonDay.click();
-            
+
             for (let i = 0; i < numberOfCategories; i++) {
                 createNewCategory(user.categories[i].name);
             }
             createCategory();
             deleteCategoryFromDatabase(id);
+            dayClicked = false;
+            buttonDay.click();
             Swal.fire(
                 'Deleted!',
                 'Your category has been deleted.',
@@ -446,7 +451,7 @@ buttonCurrencies[0].addEventListener("click", async function () {
         });
         let rate;
         if (oldCurrency === "$") {
-            rate = await fetchExchangeRate("USD","RON");
+            rate = await fetchExchangeRate("USD", "RON");
             let newValue = parseFloat(spanBudgetValue.innerText) * rate;
             spanBudgetValue.innerText = newValue.toFixed(2);
             user.expenses.forEach(function (expense) {
@@ -454,7 +459,7 @@ buttonCurrencies[0].addEventListener("click", async function () {
             });
         }
         if (oldCurrency === "€") {
-            rate = await fetchExchangeRate("EUR","RON");
+            rate = await fetchExchangeRate("EUR", "RON");
             let newValue = parseFloat(spanBudgetValue.innerText) * rate;
             spanBudgetValue.innerText = newValue.toFixed(2);
             user.expenses.forEach(function (expense) {
@@ -484,7 +489,7 @@ buttonCurrencies[1].addEventListener("click", async function () {
         });
         let rate;
         if (oldCurrency === "RON") {
-            rate = await fetchExchangeRate("RON","USD");
+            rate = await fetchExchangeRate("RON", "USD");
             let newValue = parseFloat(spanBudgetValue.innerText) * rate;
             spanBudgetValue.innerText = newValue.toFixed(2);
             user.expenses.forEach(function (expense) {
@@ -493,7 +498,7 @@ buttonCurrencies[1].addEventListener("click", async function () {
             });
         }
         if (oldCurrency === "€") {
-            rate = await fetchExchangeRate("EUR","USD");
+            rate = await fetchExchangeRate("EUR", "USD");
             let newValue = parseFloat(spanBudgetValue.innerText) * rate;
             spanBudgetValue.innerText = newValue.toFixed(2);
             user.expenses.forEach(function (expense) {
@@ -523,7 +528,7 @@ buttonCurrencies[2].addEventListener("click", async function () {
         });
         let rate;
         if (oldCurrency === "RON") {
-            rate = await fetchExchangeRate("RON","EUR");
+            rate = await fetchExchangeRate("RON", "EUR");
             let newValue = parseFloat(spanBudgetValue.innerText) * rate;
             spanBudgetValue.innerText = newValue.toFixed(2);
             user.expenses.forEach(function (expense) {
@@ -531,7 +536,7 @@ buttonCurrencies[2].addEventListener("click", async function () {
             });
         }
         if (oldCurrency === "$") {
-            rate = await fetchExchangeRate("USD","EUR");
+            rate = await fetchExchangeRate("USD", "EUR");
             let newValue = parseFloat(spanBudgetValue.innerText) * rate;
             spanBudgetValue.innerText = newValue.toFixed(2);
             user.expenses.forEach(function (expense) {
@@ -594,7 +599,7 @@ buttonChangeBudget.addEventListener("click", function () {
                 event.preventDefault();
             }
             if (spanBudgetValue.innerText.length > 5 && !isBackspace && !isArrowLeft && !isArrowRight && !isPeriod) {
-                if(!spanBudgetValue.innerText.includes(".")) {
+                if (!spanBudgetValue.innerText.includes(".")) {
                     event.preventDefault();
                 }
                 // Add 3 more characters for ".00"
@@ -603,7 +608,7 @@ buttonChangeBudget.addEventListener("click", function () {
                 }
             }
 
-            if(isPeriod && spanBudgetValue.innerText.includes(".")) {
+            if (isPeriod && spanBudgetValue.innerText.includes(".")) {
                 event.preventDefault();
             }
         });
@@ -612,9 +617,9 @@ buttonChangeBudget.addEventListener("click", function () {
         buttonChangeBudgetClicked = false;
 
         newBudgetValue = spanBudgetValue.innerText;
-        if (newBudgetValue === "" || parseFloat(newBudgetValue) === 0 
-            || parseFloat(oldBudgetValue) === parseFloat(newBudgetValue) 
-            || newBudgetValue[newBudgetValue.length-1] === "."
+        if (newBudgetValue === "" || parseFloat(newBudgetValue) === 0
+            || parseFloat(oldBudgetValue) === parseFloat(newBudgetValue)
+            || newBudgetValue[newBudgetValue.length - 1] === "."
             || newBudgetValue[0] === ".") {
             spanBudgetValue.innerText = oldBudgetValue;
         }
@@ -651,7 +656,11 @@ buttonAddCategory.addEventListener("click", function () {
     if (!buttonAddCategoryClicked) {
 
         buttonAddCategoryClicked = true;
-        divStatistics.style.display = 'flex';
+        divGroupStatistics.style.display = "flex";
+
+        // Animation for statistics
+        dayClicked = false;
+        buttonDay.click();
 
         /* Add new expense */
         divAddNewExpense.style.display = 'none';
@@ -677,7 +686,7 @@ function createDivAddNewCategory() {
     inputNewCategory.placeholder = "Food";
     inputNewCategory.required = true;
     inputNewCategory.type = "text";
-    inputNewCategory.maxLength = 10;
+    inputNewCategory.maxLength = 15;
     inputNewCategory.name = "category";
     inputNewCategory.style = "margin-top: 10px;"
     formAddNewCategory.appendChild(inputNewCategory);
@@ -690,7 +699,7 @@ function createDivAddNewCategory() {
     formAddNewCategory.style = "display: flex; flex-direction: column;";
     divAddNewCategory.appendChild(formAddNewCategory);
 
-    divGroupMiddleSections.insertBefore(divAddNewCategory, divStatistics);
+    divGroupMiddleSections.insertBefore(divAddNewCategory, divGroupStatistics);
 }
 
 
@@ -723,7 +732,6 @@ formAddNewCategory.addEventListener("submit", async function (event) {
             console.error('Error adding new category:', error);
         }
         createNewCategory(inputNewCategory.value);
-
         buttonAddCategoryClicked = false;
         formAddNewCategory.reset();
 
@@ -740,24 +748,28 @@ function createNewCategory(value) {
     let divNewCategoryInStatistics = document.createElement('div');
     divNewCategoryInStatistics.classList.add('div-individual-statistics');
 
-    let spanCategoryName = document.createElement('span');
-    spanCategoryName.classList.add('category-name');
-    spanCategoryName.innerText = value;
-    divNewCategoryInStatistics.appendChild(spanCategoryName);
-    divNewCategoryInStatistics.appendChild(document.createTextNode(' '));
+    let divCategoryDetails = document.createElement('div');
+    divCategoryDetails.classList.add("div-statistics-category-details");
+
+    let divCategoryName = document.createElement('div');
+    divCategoryName.classList.add('statistics-category-name');
+    divCategoryName.innerText = value;
+    divCategoryDetails.appendChild(divCategoryName);
+
+    let divGroupAmountAndCurrency = document.createElement('div');
 
     let spanCategoryAmount = document.createElement('span');
     spanCategoryAmount.classList.add('statistics-amount');
     spanCategoryAmount.innerText = "0.00";
-    divNewCategoryInStatistics.appendChild(spanCategoryAmount);
-    divNewCategoryInStatistics.appendChild(document.createTextNode(' '));
+    divGroupAmountAndCurrency.appendChild(spanCategoryAmount);
 
     let spanCurrency = document.createElement('span');
     spanCurrency.classList.add('currency');
-    divNewCategoryInStatistics.appendChild(spanCurrency);
-    divNewCategoryInStatistics.appendChild(document.createTextNode(' '));
-
     spanCurrency.innerText = currency;
+    divGroupAmountAndCurrency.appendChild(spanCurrency);
+
+    divCategoryDetails.appendChild(divGroupAmountAndCurrency);
+    divNewCategoryInStatistics.appendChild(divCategoryDetails);
 
     let divProgressBox = document.createElement('div');
     divProgressBox.classList.add('progress-box');
@@ -769,11 +781,11 @@ function createNewCategory(value) {
     divProgress.innerHTML = "0%";
     divProgressBox.appendChild(divProgress);
 
-    divStatistics.insertBefore(divNewCategoryInStatistics,
+    divStatisticsPercentage.insertBefore(divNewCategoryInStatistics,
         document.querySelector('.div-statistics-total'));
 
     currencyHTML = document.querySelectorAll('.currency');
-    statisticsCategory = document.querySelectorAll('.category-name');
+    statisticsCategory = document.querySelectorAll('.statistics-category-name');
     statisticsAmount = document.querySelectorAll('.statistics-amount');
     statisticsProgress = document.querySelectorAll('.progress');
 
@@ -852,7 +864,6 @@ async function setNewExpenseToList(amount, category) {
 
         const newExpenseFromServer = new Expense(responseData.id, category, parseFloat(amount), new Date().toISOString().split('T')[0]);
         user.expenses.push(newExpenseFromServer);
-
         dayClicked = false;
         buttonDay.click();
     } catch (error) {
@@ -992,32 +1003,38 @@ function populateHistory(expenses, period) {
 
     expenses.reverse().forEach(function (expense) {
         let divHistoryItem = document.createElement('div');
-        divHistoryItem.classList.add('div-history-list');
+        divHistoryItem.classList.add('div-history-item');
 
-        let expenseSpan = document.createElement('span');
-        expenseSpan.textContent = expense.category + ': ' + (expense.sum).toFixed(2) + ' ';
-        expenseSpan.classList.add('hover-red');
+        let categorySpan = document.createElement('span');
+        categorySpan.textContent = expense.category;
+        categorySpan.classList.add('category-span');
+
+        let amountCurrencyContainer = document.createElement('div');
+        amountCurrencyContainer.classList.add('amount-currency-container');
+
+        let amountSpan = document.createElement('span');
+        amountSpan.textContent = (expense.sum).toFixed(2) + ' ';
+        amountSpan.classList.add('history-item-component');
 
         let currencySpan = document.createElement('span');
         currencySpan.classList.add('currency');
-
+        currencySpan.style = "margin-left:5px";
         currencySpan.textContent = currency;
-        expenseSpan.appendChild(currencySpan);
 
+        amountCurrencyContainer.appendChild(amountSpan);
+        amountCurrencyContainer.appendChild(currencySpan);
 
-        divHistoryItem.appendChild(expenseSpan);
+        divHistoryItem.appendChild(categorySpan);
+        divHistoryItem.appendChild(amountCurrencyContainer);
+
         divHistoryList.appendChild(divHistoryItem);
-
     });
 }
 
 
 function calculateStatistics(expenses) {
 
-    let categorySumVector = [];
-    for (let i = 0; i < numberOfCategories; i++) {
-        categorySumVector.push(0);
-    }
+    let categorySumVector = new Array(numberOfCategories).fill(0);
     let total = 0;
 
 
@@ -1047,22 +1064,110 @@ function calculateStatistics(expenses) {
         let percentage = 0;
         for (let i = 0; i < numberOfCategories; i++) {
             percentage = categorySumVector[i] / total * 100;
-            if(Math.round(percentage === 0)) {
-                statisticsProgress[i].style.width = percentage.toFixed(2) / 100 * 500 + "px";
+            if (percentage > 0 && percentage < 1) {
+                percentage = 1
+            }
+            if (Math.round(percentage) < 6 && Math.round(percentage) > 0) {
+                statisticsProgress[i].innerHTML = Math.round(percentage) + "%";
+                percentage = 6;
+                statisticsProgress[i].style.width = percentage.toFixed(2) / 100 * maxWidthProgress + "px";
             }
             else {
-                if (Math.round(percentage) < 6) {
-                    statisticsProgress[i].innerHTML = Math.round(percentage) + "%";
-                    percentage = 6;
-                    statisticsProgress[i].style.width = percentage.toFixed(2) / 100 *  maxWidthProgress + "px";
-                }
-                else {
-                    statisticsProgress[i].innerHTML = Math.round(percentage) + "%";
-                    statisticsProgress[i].style.width = percentage.toFixed(2) / 100 * maxWidthProgress + "px";
+                statisticsProgress[i].innerHTML = Math.round(percentage) + "%";
+                statisticsProgress[i].style.width = percentage.toFixed(2) / 100 * maxWidthProgress + "px";
+            }
+
+        }
+    }
+    createOrUpdateChart(categorySumVector, total);
+}
+
+
+function createOrUpdateChart(categorySumVector, totalMoneySpent) {
+    divPieChart.style.height = (divStatisticsPercentage.clientHeight) + "px";
+    if (pieChart) {
+        pieChart.destroy();
+        pieChart = null;
+    }
+
+    if (categorySumVector.length === 0) {
+        divPieChart.innerHTML = "";
+        let title = document.createElement("span");
+        title.textContent = "Chart";
+        title.classList.add("span-title-pie-chart");
+        divPieChart.appendChild(title);
+
+        let noDataToShowMessage = document.createElement("span");
+        noDataToShowMessage.textContent = "No data available!";
+        noDataToShowMessage.classList.add("span-no-data-to-show");
+        divPieChart.appendChild(noDataToShowMessage);
+        return;
+    }
+    else if (totalMoneySpent === 0) {
+        divPieChart.innerHTML = "";
+        let title = document.createElement("span");
+        title.textContent = "Chart";
+        title.classList.add("span-title-pie-chart");
+        divPieChart.appendChild(title);
+
+        let noDataToShowMessage = document.createElement("span");
+        noDataToShowMessage.textContent = "No expenses registered!";
+        noDataToShowMessage.classList.add("span-no-data-to-show");
+        divPieChart.appendChild(noDataToShowMessage);
+        return;
+    }
+
+    divPieChart.innerHTML = "";
+    divPieChart.appendChild(canvasPieChart);
+
+    canvasPieChart.width = divPieChart.clientWidth;
+    canvasPieChart.height = divPieChart.clientHeight;
+
+    pieChart = new Chart(canvasPieChart, {
+        type: 'pie',
+        data: {
+            labels: Array.from(statisticsCategory).map(cat => cat.innerHTML),
+            datasets: [{
+                label: 'Amount',
+                data: categorySumVector,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Chart',
+                    color: 'rgb(28, 48, 162)',
+                    font: {
+                        size: 25,
+                        weight: 'bold',
+                        family: "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
+                    }
+                },
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    align: 'center',
+                    labels: {
+                        color: 'rgb(28, 48, 162)',
+                        boxWidth: 40,
+                        padding: 15,
+                        font: {
+                            size: 16,
+                            weight: 'bold',
+                            family: "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
+                        }
+                    }
+                },
+                tooltip: {
+                    enabled: true
                 }
             }
         }
-    }
+    });
 }
 
 /* Get expenses by period */
@@ -1127,10 +1232,10 @@ function getYearExpenses(expenses) {
 /* ------------------------------------------------------------------------------------ */
 
 let buttonLogOut = document.getElementById("button-logout");
-buttonLogOut.addEventListener('click', function(){
-token = null;
-localStorage.removeItem('accessToken');
-window.location.href = "../authentication/login.html"
+buttonLogOut.addEventListener('click', function () {
+    token = null;
+    localStorage.removeItem('accessToken');
+    window.location.href = "../authentication/login.html"
 });
 
 
@@ -1408,7 +1513,7 @@ async function fetchExchangeRate(fromCurrency, toCurrency) {
 
         const exchangeRate = await response.json();
         return exchangeRate.rates[toCurrency];
-    
+
     } catch (error) {
         console.error("Error fetching exchange rate:", error);
         throw error;

@@ -1,17 +1,26 @@
+/* Global Styles */
 body {
     background-color: azure;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
+/* Page Layout */
 .page-organization {
     display: grid;
     grid-template-columns: 210px auto 300px;
 }
 
-
-/* Navbar (left) */
+/* Navbar (Left) */
+.vertical-navbar {
+    background-image: linear-gradient(rgb(144, 123, 238), rgb(28, 120, 162), rgb(74, 33, 255));
+    display: flex;
+    flex-direction: column;
+    width: 190px;
+    margin: 0;
+    padding: 10px;
+}
 
 .vertical-navbar-title {
     font-size: 30px;
@@ -37,33 +46,7 @@ body {
     border: 1px solid white;
 }
 
-.vertical-navbar {
-    background-image: linear-gradient(rgb(144, 123, 238), rgb(28, 120, 162), rgb(74, 33, 255));
-    display: flex;
-    flex-direction: column;
-    width: 190px;
-    margin: 0px;
-    padding: 10px;
-}
-
-
-
-/* Middle section */
-
-.group-middle-sections {
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
-    height: 100vh;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-}
-.group-middle-sections::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, and other WebKit browsers */
-}
-
-/* Navbar (top-middle) */
-
+/* Navbar (Top-Middle) */
 .horizontal-navbar {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -88,7 +71,6 @@ body {
     border-bottom: 1px solid rgb(74, 33, 255);
 }
 
-
 .span-username {
     font-size: 30px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -100,8 +82,24 @@ body {
     margin: 5px;
 }
 
-/* Add new expense AND Add new category (middle) */
+/* Middle Section */
+.group-middle-sections {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    height: 100vh;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+}
 
+.group-middle-sections::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, and other WebKit browsers */
+}
+
+/* Add New Expense & Add New Category */
 .div-add-new-expense,
 .div-add-new-category {
     display: flex;
@@ -140,30 +138,28 @@ body {
     font-weight: bold;
 }
 
-.form-input-expense {
-    font-weight: bold;
+.form-input-expense,
+.form-input-amount,
+.form-input-category {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 15px;
+    text-align: center;
 }
 
 .form-input-amount {
     border: 3px solid rgb(74, 33, 255);
     border-radius: 30px;
     padding: 5px;
-    margin: 0px;
+    margin: 0;
     width: 125px;
-    font-size: 15px;
-    text-align: center;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .form-input-category {
     border: 3px solid rgb(74, 33, 255);
     border-radius: 30px;
-    margin: 0px;
+    margin: 0;
     padding: 5px;
     width: 145px;
-    font-size: 15px;
-    text-align: center;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .button-add-new-expense,
@@ -179,7 +175,7 @@ body {
 }
 
 .button-add-new-category {
-    margin:20px;
+    margin: 20px;
 }
 
 .button-add-new-expense:hover,
@@ -187,40 +183,50 @@ body {
     cursor: pointer;
 }
 
-
-/* Categories percentage (bottom-middle) */
+/* Statistics (Bottom-Middle) */
+.div-group-statistics {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
 
 .div-statistics {
     display: flex;
     flex-direction: column;
-    width: 500px;
+    width: 400px;
     align-self: center;
-    margin-top: 20px;
-    margin-bottom: 10px;
     padding: 10px;
     border: 2px solid rgb(74, 33, 255);
     border-radius: 10px;
+}
+
+.div-statistics-category-details {
+    display: flex;
+    justify-content: space-between;
 }
 
 .statistics-amount {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 20px;
     font-weight: bold;
+    margin-right: 3px;
     color: rgb(28, 48, 162);
 }
 
-.div-statistics-title {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 25px;
-    text-align: center;
+.statistics-category-name {
+    max-width: 250px;
+    font-size: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-weight: bold;
     color: rgb(28, 48, 162);
-    align-self: center;
-    margin: 0px;
-    width: 300px;
-    border-bottom: 2px solid rgb(74, 33, 255);
 }
 
+.div-statistics-title,
 .div-statistics-total {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 25px;
@@ -228,26 +234,25 @@ body {
     font-weight: bold;
     color: rgb(28, 48, 162);
     align-self: center;
-    margin: 0px;
+    margin: 0;
+    width: 400px;
+}
+
+.div-statistics-title {
+    border-bottom: 2px solid rgb(74, 33, 255);
+}
+
+.div-statistics-total {
     margin-top: 10px;
-    width: 300px;
     border-top: 2px solid rgb(74, 33, 255);
 }
-
-.category-name {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 20px;
-    font-weight: bold;
-    color: rgb(28, 48, 162);
-}
-
 
 .progress-box {
     display: block;
     background-color: azure;
     border-radius: 50px;
     border: 1px solid rgb(74, 33, 255);
-    width: 500px;
+    width: 400px;
     height: 15px;
 }
 
@@ -262,9 +267,27 @@ body {
     text-align: center;
 }
 
+.div-pie-chart {
+    border: 2px solid rgb(74, 33, 255);
+    border-radius: 10px;
+    margin-left: 10px;
+    width: 400px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
-/* History of expenses (right)*/
+.span-no-data-to-show,
+.span-title-pie-chart {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+    color: rgb(28, 48, 162);
+}
 
+/* History of Expenses (Right) */
 .div-history {
     border-left: 3px solid rgb(28, 48, 162);
     display: flex;
@@ -273,9 +296,8 @@ body {
     height: 100vh;
 }
 
-.span-history-title{
+.span-history-title {
     font-size: 30px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     color: rgb(28, 48, 162);
     font-weight: bold;
     text-align: center;
@@ -286,7 +308,6 @@ body {
 .div-history-list {
     display: flex;
     flex-direction: column;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 20px;
     font-weight: bold;
     color: rgb(28, 48, 162);
@@ -296,7 +317,6 @@ body {
 .span-history-date {
     display: flex;
     flex-direction: column;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 20px;
     align-self: center;
     font-weight: bold;
@@ -309,13 +329,36 @@ body {
     border-bottom: 1px solid rgb(28, 48, 162);
 }
 
+.div-history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+    padding: 0;
+    padding-right: 10px;
+}
 
-/* Add new category */
+.amount-currency-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.category-span {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: bold;
+    color: rgb(28, 48, 162);
+}
+
+/* Add New Category */
 .input-category {
     border: 3px solid rgb(74, 33, 255);
     border-radius: 30px;
     padding: 5px;
-    margin: 0px;
+    margin: 0;
     width: 15vw;
     font-size: 20px;
     text-align: center;
@@ -323,8 +366,7 @@ body {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-/* Currency options */
-
+/* Currency Options */
 .div-currency-options {
     display: none;
     background-color: none;
@@ -347,7 +389,6 @@ body {
     margin-top: 10px;
     padding: 5px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-
     text-align: center;
 }
 
@@ -355,8 +396,7 @@ body {
     border-bottom: 0.5px solid white;
 }
 
-/* See expenses */
-
+/* See Expenses */
 .div-expenses,
 .div-categories {
     display: flex;
@@ -383,6 +423,7 @@ body {
     border-bottom: 1px solid rgb(28, 48, 162);
 }
 
+/* Expense Card */
 .expense-card {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -394,18 +435,24 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.expense-category, .expense-sum, .expense-date {
-    flex: 1; 
-    text-align: center; 
+.expense-category-see-expenses,
+.expense-sum-see-expenses,
+.expense-date-see-expenses {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    text-align: center;
     margin-top: 5px;
 }
 
-.expense-action {
+.expense-action-see-expenses {
     flex: 0;
     text-align: center;
 }
 
-.expense-action button {
+.expense-action-see-expenses button {
     background-color: #f44336;
     color: white;
     border: none;
@@ -423,8 +470,7 @@ body {
     font-weight: bold;
 }
 
-/* Category */
-
+/* Category Card */
 .category-card {
     display: grid;
     grid-template-columns: 1fr 1fr;
