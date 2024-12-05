@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                 .cors(config -> config.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowCredentials(true);
-                    configuration.setAllowedOrigins(Collections.singletonList("http://127.0.0.1:5500"));
+                    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
                     configuration.setAllowedHeaders(Collections.singletonList("*"));
                     configuration.setAllowedMethods(Collections.singletonList("*"));
                     configuration.setMaxAge(3600L);
