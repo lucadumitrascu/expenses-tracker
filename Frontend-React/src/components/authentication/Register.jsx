@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import '../styles/auth.css';
+import '../../styles/auth.css';
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -79,7 +79,7 @@ function Register() {
         <div className="div-container">
             <h1 className="title">Expenses Tracker</h1>
 
-            <form id="form-register" onSubmit={handleSubmit}>
+            <form id="form-register" onSubmit={handleSubmit} method="POST">
                 <h2>Register</h2>
 
                 <label htmlFor="username">Username:</label>

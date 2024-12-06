@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import '../styles/auth.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import '../../styles/auth.css';
 
-const Login = () => {
+function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -33,7 +33,7 @@ const Login = () => {
       if (response.status === 200) {
         const responseData = await response.json();
         localStorage.setItem("accessToken", responseData.accessToken);
-        navigate("/index");
+        navigate("/dashboard");
       } else {
         setError("Incorrect username or password!");
       }
@@ -57,7 +57,7 @@ const Login = () => {
     <div className="div-container">
       <h1 className="title">Expenses Tracker</h1>
 
-      <form id="form-login" onSubmit={handleSubmit}>
+      <form id="form-login" onSubmit={handleSubmit} method="POST">
         <h2>Login</h2>
 
         <label htmlFor="username">Username:</label>
@@ -75,7 +75,7 @@ const Login = () => {
           <p
             id="p-forgot-password"
             className="p-forgot-password"
-            onClick={() => (navigate("/authentication/forgot-password"))}>
+            onClick={() => navigate("/authentication/forgot-password")}>
             Forgot Password?
           </p>
         </label>
@@ -115,6 +115,6 @@ const Login = () => {
       </form>
     </div>
   );
-};
+}
 
 export default Login;
