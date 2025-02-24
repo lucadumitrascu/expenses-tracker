@@ -1,0 +1,66 @@
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    background-color: #ECF0F1;
+    padding: 1em;
+    min-height: 100px;
+}
+
+.hero h2 {
+    font-size: 2rem;
+    color: #2C3E50;
+    margin: 10px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin: 10px;
+    color: #7F8C8D;
+}
+
+.ctaButtons {
+    display: flex;
+    margin: 10px;
+    gap: 20px;
+}
+
+.ctaButtons button {
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.joinBtn {
+    background-color: #3498DB;
+    color: white;
+}
+
+.joinBtn:hover {
+    background-color: #2980B9;
+    cursor: pointer;
+}
+
+.loginBtn {
+    background-color: #2C3E50;
+    color: white;
+    border: 2px solid #2C3E50;
+}
+
+.loginBtn:hover {
+    background-color: #3498DB;
+    color: white;
+    cursor: pointer;
+}
+
+.hero .highlight {
+    color: #F39C12;
+    display: inline;
+    font-size: 2rem;
+}

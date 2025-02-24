@@ -1,0 +1,85 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #2C3E50;
+    color: white;
+}
+
+.navbar .logo h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.navbar .navButtons {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.navbar .joinBtn,
+.navbar .loginBtn {
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.navbar .joinBtn {
+    background-color: #3498DB;
+    color: white;
+    border: none;
+}
+
+.navbar .joinBtn:hover {
+    background-color: #2980B9;
+    cursor: pointer;
+}
+
+.navbar .loginBtn {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.navbar .loginBtn:hover {
+    background-color: white;
+    color: #2C3E50;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 420px) {
+
+    .navbar .joinBtn,
+    .navbar .loginBtn {
+        padding: 5px 10px;
+    }
+
+    .navbar {
+        padding: 10px 20px;
+    }
+}
+
+@media screen and (max-width: 315px) {
+
+    .navbar .joinBtn,
+    .navbar .loginBtn {
+        display: none;
+    }
+
+    .navbar .navButtons {
+        display: none;
+    }
+
+    .navbar {
+        display: flex;
+        margin: 0px;
+        padding: 5px 10px;
+        text-align: center;
+        align-self: center;
+        justify-content: center;
+        align-items: center;
+    }
+}

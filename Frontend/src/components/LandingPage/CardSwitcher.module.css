@@ -1,0 +1,55 @@
+.cardContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0.1em solid #7F8C8D;
+    border-radius: 10px;
+    width: 60vw;
+    text-align: center;
+    justify-self: center;
+}
+
+.cardContainer p {
+    font-size: 16px;
+    color: #2C3E50;
+}
+
+.buttonChangeCard {
+    margin: 0 10px;
+    background-color: transparent;
+    font-size: 16px;
+    cursor: pointer;
+    color: #2C3E50;
+    border: none;
+    border-radius: 5px;
+}
+
+.cardTitle {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3498DB;
+    margin-bottom: 10px;
+}
+
+.transition {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.transition.visible {
+    opacity: 1;
+}
+
+@media screen and (max-width: 600px) {
+
+    .cardContainer {
+        width: 90vw;
+    }
+}
+
+@media screen and (max-width: 256px) {
+
+    .cardContainer {
+        display: none;
+    }
+}
