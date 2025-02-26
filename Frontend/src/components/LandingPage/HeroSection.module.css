@@ -3,7 +3,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
     text-align: center;
     background-color: #ECF0F1;
     padding: 1em;
@@ -22,13 +21,13 @@
     color: #7F8C8D;
 }
 
-.ctaButtons {
+.hero .cta-buttons {
     display: flex;
     margin: 10px;
     gap: 20px;
 }
 
-.ctaButtons button {
+.hero .cta-buttons button {
     font-weight: bold;
     padding: 12px 24px;
     border-radius: 5px;
@@ -37,23 +36,23 @@
     border: none;
 }
 
-.joinBtn {
+.hero .join-btn {
     background-color: #3498DB;
     color: white;
 }
 
-.joinBtn:hover {
+.hero .join-btn:hover {
     background-color: #2980B9;
     cursor: pointer;
 }
 
-.loginBtn {
+.hero .login-btn {
     background-color: #2C3E50;
     color: white;
     border: 2px solid #2C3E50;
 }
 
-.loginBtn:hover {
+.hero .login-btn:hover {
     background-color: #3498DB;
     color: white;
     cursor: pointer;

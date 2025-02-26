@@ -6,9 +6,9 @@ import HeroSection from './HeroSection';
 
 const LandingPage = () => {
   return (
-    <>
+    <div className={styles['landing-page-container']}>
       <Navbar />
-      <div className={styles.pageContent}>
+      <div className={styles['page-content']}>
         <section>
           <HeroSection />
         </section>
@@ -16,7 +16,7 @@ const LandingPage = () => {
           <CardSwitcher />
         </section>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -70,16 +70,16 @@ function CardSwitcher() {
     };
 
     return (
-        <div className={styles.cardContainer}>
-            <button className={styles.buttonChangeCard} onClick={handleLeftClick}>
-                <i className="fa fa-chevron-left"></i>
+        <div className={styles['card-container']}>
+            <button className={styles['button-change-card']} onClick={handleLeftClick}>
+                <i className="fa-solid fa-chevron-left"></i>
             </button>
             <div className={`${styles.transition} ${fadeClass}`}>
-                <h2 className={styles.cardTitle}>{cardsData[currentIndex].title}</h2>
+                <h2 className={styles['card-title']}>{cardsData[currentIndex].title}</h2>
                 <p>{cardsData[currentIndex].content}</p>
             </div>
-            <button className={styles.buttonChangeCard} onClick={handleRightClick}>
-                <i className="fa fa-chevron-right"></i>
+            <button className={styles['button-change-card']} onClick={handleRightClick}>
+                <i className="fa-solid fa-chevron-right"></i>
             </button>
         </div>
     );

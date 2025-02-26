@@ -1,4 +1,4 @@
-.navbar {
+.landing-page-navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -7,19 +7,19 @@
     color: white;
 }
 
-.navbar .logo h1 {
+.landing-page-navbar .logo h1 {
     font-size: 24px;
     margin: 0;
 }
 
-.navbar .navButtons {
+.landing-page-navbar .nav-buttons {
     display: flex;
     flex-direction: row;
     gap: 20px;
 }
 
-.navbar .joinBtn,
-.navbar .loginBtn {
+.landing-page-navbar .join-btn,
+.landing-page-navbar .login-btn {
     font-weight: bold;
     padding: 10px 20px;
     border-radius: 5px;
@@ -27,24 +27,24 @@
     transition: all 0.3s ease;
 }
 
-.navbar .joinBtn {
+.landing-page-navbar .join-btn {
     background-color: #3498DB;
     color: white;
     border: none;
 }
 
-.navbar .joinBtn:hover {
+.landing-page-navbar .join-btn:hover {
     background-color: #2980B9;
     cursor: pointer;
 }
 
-.navbar .loginBtn {
+.landing-page-navbar .login-btn {
     background-color: transparent;
     color: white;
     border: 2px solid white;
 }
 
-.navbar .loginBtn:hover {
+.landing-page-navbar .login-btn:hover {
     background-color: white;
     color: #2C3E50;
     cursor: pointer;
@@ -52,29 +52,29 @@
 
 @media screen and (max-width: 420px) {
 
-    .navbar .joinBtn,
-    .navbar .loginBtn {
+    .landing-page-navbar .join-btn,
+    .landing-page-navbar .login-btn {
         padding: 5px 10px;
     }
 
-    .navbar {
+    .landing-page-navbar {
         padding: 10px 20px;
     }
 }
 
 @media screen and (max-width: 315px) {
 
-    .navbar .joinBtn,
-    .navbar .loginBtn {
+    .landing-page-navbar .join-btn,
+    .landing-page-navbar .login-btn {
         display: none;
     }
 
-    .navbar .navButtons {
+    .landing-page-navbar .nav-buttons {
         display: none;
     }
 
-    .navbar {
-        display: flex;
+    .landing-page-navbar {
+        width: 100%;
         margin: 0px;
         padding: 5px 10px;
         text-align: center;
