@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
-import styles from './Authentication.module.css';
+import { useNavigate } from "react-router-dom";
+import styles from "./Authentication.module.css";
+import GoogleLoginButton from "../Authentication/GoogleLoginButton";
 
 function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +16,6 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     try {
       const response = await fetch(
         "http://localhost:8080/api/authentication/login",
@@ -25,13 +25,14 @@ function Login() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({ email, password }),
         }
       );
 
       if (response.status === 200) {
         const responseData = await response.json();
         localStorage.setItem("accessToken", responseData.message);
+        console.log(responseData.message);
         navigate("/dashboard");
       } else {
         const responseData = await response.json();
@@ -60,13 +61,14 @@ function Login() {
       <form id="formLogin" onSubmit={handleSubmit} method="POST">
         <h2>Login</h2>
 
-        <label htmlFor="username">Username:</label>
+        <label htmlFor="email">Email:</label>
         <input
           type="text"
-          id="username"
-          name="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          id="email"
+          name="email"
+          value={email}
+          autoComplete="email"
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
 
@@ -87,6 +89,7 @@ function Login() {
             className={styles['input-password']}
             name="password"
             value={password}
+            autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
             required
           />
@@ -112,6 +115,8 @@ function Login() {
             Register
           </button>
         </div>
+
+        <GoogleLoginButton />
 
       </form>
     </div>

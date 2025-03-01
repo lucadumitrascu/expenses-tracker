@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Authentication.module.css";
+import GoogleLoginButton from "../Authentication/GoogleLoginButton";
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -32,8 +33,8 @@ function Register() {
             setError("Passwords must be the same!");
             return;
 
-        } else if (formData.password.length < 6) { 
-            setError('Password must be at least 6 characters long!'); 
+        } else if (formData.password.length < 6) {
+            setError('Password must be at least 6 characters long!');
             return;
         }
 
@@ -90,6 +91,7 @@ function Register() {
                     id="username"
                     name="username"
                     value={formData.username}
+                    autoComplete="username"
                     onChange={handleChange}
                     required
                 />
@@ -100,6 +102,7 @@ function Register() {
                     id="email"
                     name="email"
                     value={formData.email}
+                    autoComplete="email"
                     onChange={handleChange}
                     required
                 />
@@ -110,6 +113,7 @@ function Register() {
                     id="password"
                     name="password"
                     value={formData.password}
+                    autoComplete="new-password"
                     onChange={handleChange}
                     required
                 />
@@ -120,6 +124,7 @@ function Register() {
                     id="confirmPassword"
                     name="confirmPassword"
                     value={formData.confirmPassword}
+                    autoComplete="new-password"
                     onChange={handleChange}
                     required
                 />
@@ -134,8 +139,10 @@ function Register() {
                         Login
                     </button>
                 </div>
+                <GoogleLoginButton />
             </form>
         </div>
+
     );
 }
 

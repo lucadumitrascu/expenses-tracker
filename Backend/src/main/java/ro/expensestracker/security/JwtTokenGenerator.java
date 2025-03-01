@@ -2,31 +2,45 @@ package ro.expensestracker.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
 public class JwtTokenGenerator {
+
     public String generateToken(Authentication authentication) {
-        String username = authentication.getName();
+        String email = null;
+
+        if (authentication instanceof OAuth2AuthenticationToken oauthToken) {
+            email = oauthToken.getPrincipal().getAttribute("email");
+        } else if (authentication instanceof UsernamePasswordAuthenticationToken) {
+            email = authentication.getName();
+        }
+
+        if (email == null) {
+            throw new IllegalArgumentException("Email not found.");
+        }
+
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + SecurityConstants.JWT_EXPIRATION);
 
         return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
+                .setSubject(email)
+                .setIssuedAt(currentDate)
                 .setExpiration(expireDate)
-                .signWith(SignatureAlgorithm.HS512, SecurityConstants.JWT_SECRET)
+                .signWith(SecurityConstants.JWT_SECRET)
                 .compact();
     }
 
-    public String getUsernameFromJwt(String token) {
-        Claims claims = Jwts.parser()
+    public String getEmailFromJwt(String token) {
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(SecurityConstants.JWT_SECRET)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
@@ -34,7 +48,10 @@ public class JwtTokenGenerator {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SecurityConstants.JWT_SECRET).parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(SecurityConstants.JWT_SECRET)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             throw new AuthenticationCredentialsNotFoundException("Jwt was expired or incorrect");

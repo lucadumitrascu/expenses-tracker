@@ -1,5 +1,6 @@
 package ro.expensestracker.security;
 
+import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,19 +16,17 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-
     @Autowired
     private JwtTokenGenerator jwtTokenGenerator;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
-
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String token = getJwtFromRequest(request);
         if (StringUtils.hasText(token) && jwtTokenGenerator.validateToken(token)) {
-            String username = jwtTokenGenerator.getUsernameFromJwt(token);
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+            String email = jwtTokenGenerator.getEmailFromJwt(token);
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(userDetails, null, null);
 

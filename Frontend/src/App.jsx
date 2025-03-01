@@ -6,6 +6,7 @@ import Login from './components/Authentication/Login';
 import Register from './components/authentication/Register';
 import ForgotPassword from './components/Authentication/ForgotPassword';
 import Dashboard from './components/Dashboard/Dashboard';
+import GoogleLoginCallback from './components/Authentication/GoogleLoginCallback';
 
 function App() {
   return (
@@ -14,9 +15,10 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/authentication/login" element={<Login />} />
+        <Route path="/google-login/callback" element={<GoogleLoginCallback />} />
         <Route path="/authentication/register" element={<Register />} />
         <Route path="/authentication/forgot-password" element={<ForgotPassword />} />
-        <Route path="/dashboard" element={ <Dashboard /> } />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );

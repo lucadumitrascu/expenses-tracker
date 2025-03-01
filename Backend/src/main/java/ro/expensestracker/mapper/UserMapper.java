@@ -15,6 +15,8 @@ public class UserMapper {
         user.setPassword(userDto.getPassword());
         user.setBudget(userDto.getBudget());
         user.setCurrency(userDto.getCurrency());
+        user.setAuthProvider(userDto.getAuthProvider());
+        user.setGoogleId(userDto.getGoogleId());
 
         return user;
     }
@@ -27,6 +29,8 @@ public class UserMapper {
         userDto.setPassword(user.getPassword());
         userDto.setBudget(user.getBudget());
         userDto.setCurrency(user.getCurrency());
+        userDto.setAuthProvider(user.getAuthProvider());
+        userDto.setGoogleId(user.getGoogleId());
 
         return userDto;
     }

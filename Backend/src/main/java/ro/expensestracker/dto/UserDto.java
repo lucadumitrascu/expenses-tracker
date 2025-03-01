@@ -1,7 +1,6 @@
 package ro.expensestracker.dto;
 
-import jakarta.validation.constraints.*;
-
+import ro.expensestracker.entity.AuthProvider;
 import java.math.BigDecimal;
 
 public class UserDto {
@@ -12,17 +11,21 @@ public class UserDto {
     private String password;
     private BigDecimal budget;
     private String currency;
+    private String googleId;
+    private AuthProvider authProvider;
 
-    public UserDto(Long id, String username, String email, String password, BigDecimal budget, String currency) {
+    public UserDto() {
+    }
+
+    public UserDto(Long id, String username, String email, String password, BigDecimal budget, String currency, String googleId, AuthProvider authProvider) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.budget = budget;
         this.currency = currency;
-    }
-
-    public UserDto() {
+        this.googleId = googleId;
+        this.authProvider = authProvider;
     }
 
     public Long getId() {
@@ -71,5 +74,21 @@ public class UserDto {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public AuthProvider getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(AuthProvider authProvider) {
+        this.authProvider = authProvider;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 }

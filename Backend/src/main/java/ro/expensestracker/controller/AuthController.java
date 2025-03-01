@@ -1,6 +1,5 @@
 package ro.expensestracker.controller;
 
-
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +26,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
         return authService.login(loginDto);
+    }
+
+    @PostMapping("/google-login")
+    public ResponseEntity<ApiResponseDto> googleLogin(@RequestBody GoogleLoginDto googleToken) {
+        return authService.googleLogin(googleToken.getToken());
     }
 
     @PutMapping("/forgot-password")
