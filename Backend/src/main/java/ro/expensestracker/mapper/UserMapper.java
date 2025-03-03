@@ -13,10 +13,12 @@ public class UserMapper {
         user.setEmail(userDto.getEmail());
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
-        user.setBudget(userDto.getBudget());
-        user.setCurrency(userDto.getCurrency());
-        user.setAuthProvider(userDto.getAuthProvider());
-        user.setGoogleId(userDto.getGoogleId());
+        user.getUserFinancialDetails().setBudget(userDto.getBudget());
+        user.getUserFinancialDetails().setCurrency(userDto.getCurrency());
+        user.getUserFinancialDetails().setSalary(userDto.getSalary());
+        user.getUserFinancialDetails().setSalaryDay(userDto.getSalaryDay());
+        user.getUserAuthentication().setAuthProvider(userDto.getAuthProvider());
+        user.getUserAuthentication().setGoogleId(userDto.getGoogleId());
 
         return user;
     }
@@ -27,10 +29,12 @@ public class UserMapper {
         userDto.setEmail(user.getEmail());
         userDto.setUsername(user.getUsername());
         userDto.setPassword(user.getPassword());
-        userDto.setBudget(user.getBudget());
-        userDto.setCurrency(user.getCurrency());
-        userDto.setAuthProvider(user.getAuthProvider());
-        userDto.setGoogleId(user.getGoogleId());
+        userDto.setBudget(user.getUserFinancialDetails().getBudget());
+        userDto.setCurrency(user.getUserFinancialDetails().getCurrency());
+        userDto.setSalary(user.getUserFinancialDetails().getSalary());
+        userDto.setSalaryDay(user.getUserFinancialDetails().getSalaryDay());
+        userDto.setAuthProvider(user.getUserAuthentication().getAuthProvider());
+        userDto.setGoogleId(user.getUserAuthentication().getGoogleId());
 
         return userDto;
     }

@@ -1,6 +1,7 @@
 package ro.expensestracker.dto;
 
 import ro.expensestracker.entity.AuthProvider;
+
 import java.math.BigDecimal;
 
 public class UserDto {
@@ -13,11 +14,10 @@ public class UserDto {
     private String currency;
     private String googleId;
     private AuthProvider authProvider;
+    private BigDecimal salary;
+    private Integer salaryDay;
 
-    public UserDto() {
-    }
-
-    public UserDto(Long id, String username, String email, String password, BigDecimal budget, String currency, String googleId, AuthProvider authProvider) {
+    public UserDto(Long id, String username, String email, String password, BigDecimal budget, String currency, String googleId, AuthProvider authProvider, BigDecimal salary, Integer salaryDay) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -26,6 +26,11 @@ public class UserDto {
         this.currency = currency;
         this.googleId = googleId;
         this.authProvider = authProvider;
+        this.salary = salary;
+        this.salaryDay = salaryDay;
+    }
+
+    public UserDto() {
     }
 
     public Long getId() {
@@ -76,6 +81,14 @@ public class UserDto {
         this.currency = currency;
     }
 
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
     public AuthProvider getAuthProvider() {
         return authProvider;
     }
@@ -84,11 +97,19 @@ public class UserDto {
         this.authProvider = authProvider;
     }
 
-    public String getGoogleId() {
-        return googleId;
+    public BigDecimal getSalary() {
+        return salary;
     }
 
-    public void setGoogleId(String googleId) {
-        this.googleId = googleId;
+    public void setSalary(BigDecimal salary) {
+        this.salary = salary;
+    }
+
+    public Integer getSalaryDay() {
+        return salaryDay;
+    }
+
+    public void setSalaryDay(Integer salaryDay) {
+        this.salaryDay = salaryDay;
     }
 }

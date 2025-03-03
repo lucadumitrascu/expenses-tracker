@@ -12,10 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ro.expensestracker.dto.ApiResponseDto;
-import ro.expensestracker.dto.LoginDto;
-import ro.expensestracker.dto.RegisterDto;
+import ro.expensestracker.dto.UserCredentialsDto;
 import ro.expensestracker.entity.AuthProvider;
 import ro.expensestracker.entity.User;
+import ro.expensestracker.entity.UserAuthentication;
+import ro.expensestracker.entity.UserFinancialDetails;
 import ro.expensestracker.repository.UserRepository;
 import ro.expensestracker.security.JwtTokenGenerator;
 
@@ -39,32 +40,51 @@ public class AuthService {
         this.emailService = emailService;
     }
 
-    public ResponseEntity<ApiResponseDto> register(RegisterDto registerDto) {
-        if (userRepository.existsByUsername(registerDto.getUsername())) {
-            return new ResponseEntity<>(new ApiResponseDto("Username is taken."), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<ApiResponseDto> register(UserCredentialsDto userCredentialsDto) {
 
-        if (userRepository.existsByEmail(registerDto.getEmail())) {
+        if (userRepository.existsByEmail(userCredentialsDto.getEmail())) {
             return new ResponseEntity<>(new ApiResponseDto("Email is already in use."), HttpStatus.BAD_REQUEST);
         }
 
         User newUser = new User();
-        newUser.setUsername(registerDto.getUsername());
-        newUser.setEmail(registerDto.getEmail());
-        newUser.setPassword(registerDto.getPassword());
-        newUser.setAuthProvider(AuthProvider.CUSTOM);
-        newUser.setGoogleId(null);
-        newUser.setBudget(BigDecimal.valueOf(300.00));
-        newUser.setCurrency("RON");
+        newUser.setUsername("user");
+        newUser.setEmail(userCredentialsDto.getEmail());
+        newUser.setPassword(userCredentialsDto.getPassword());
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
+        UserAuthentication userAuthentication = new UserAuthentication();
+        userAuthentication.setAuthProvider(AuthProvider.CUSTOM);
+        userAuthentication.setGoogleId(null);
+        userAuthentication.setUser(newUser);
+
+        UserFinancialDetails userFinancialDetails = new UserFinancialDetails();
+        userFinancialDetails.setBudget(BigDecimal.valueOf(0.00));
+        userFinancialDetails.setCurrency("RON");
+        userFinancialDetails.setSalary(BigDecimal.valueOf(0.00));
+        userFinancialDetails.setSalaryDay(0);
+        userFinancialDetails.setUser(newUser);
+
+        newUser.setUserAuthentication(userAuthentication);
+        newUser.setUserFinancialDetails(userFinancialDetails);
+
         userRepository.save(newUser);
-        return new ResponseEntity<>(new ApiResponseDto("Registration successful."), HttpStatus.CREATED);
+
+        try {
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(userCredentialsDto.getEmail(), userCredentialsDto.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String token = jwtTokenGenerator.generateToken(authentication);
+
+            return new ResponseEntity<>(new ApiResponseDto(token), HttpStatus.CREATED);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(new ApiResponseDto("Something went wrong."), HttpStatus.UNAUTHORIZED);
+        }
     }
 
-    public ResponseEntity<ApiResponseDto> login(LoginDto loginDto) {
+    public ResponseEntity<ApiResponseDto> login(UserCredentialsDto userCredentialsDto) {
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(userCredentialsDto.getEmail(), userCredentialsDto.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = jwtTokenGenerator.generateToken(authentication);
 
@@ -79,7 +99,7 @@ public class AuthService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             int securityCode = generateSecurityCode();
-            if (!(user.getAuthProvider() == AuthProvider.GOOGLE)) {
+            if (!(user.getUserAuthentication().getAuthProvider() == AuthProvider.GOOGLE)) {
                 String subject = "Your Security Code";
                 String body = "Hello " + user.getUsername() + ",\n\nYour security code is: " + securityCode;
                 emailService.sendEmail(email, subject, body);
@@ -132,7 +152,8 @@ public class AuthService {
 
                 if (existingUserOpt.isPresent()) {
                     User existingUser = existingUserOpt.get();
-                    if (existingUser.getGoogleId() != null && existingUser.getGoogleId().equals(googleId)) {
+                    if (existingUser.getUserAuthentication().getGoogleId() != null
+                            && existingUser.getUserAuthentication().getGoogleId().equals(googleId)) {
                         Authentication authentication = new UsernamePasswordAuthenticationToken(
                                 googleEmail, null, Collections.emptyList()
                         );
@@ -146,11 +167,21 @@ public class AuthService {
                     User newUser = new User();
                     newUser.setEmail(googleEmail);
                     newUser.setUsername(googleEmail.split("@")[0]);
-                    newUser.setGoogleId(googleId);
-                    newUser.setAuthProvider(AuthProvider.GOOGLE);
-                    newUser.setPassword(null);
-                    newUser.setBudget(BigDecimal.valueOf(300.00));
-                    newUser.setCurrency("RON");
+
+                    UserAuthentication userAuthentication = new UserAuthentication();
+                    userAuthentication.setGoogleId(googleId);
+                    userAuthentication.setAuthProvider(AuthProvider.GOOGLE);
+                    userAuthentication.setUser(newUser);
+
+                    UserFinancialDetails userFinancialDetails = new UserFinancialDetails();
+                    userFinancialDetails.setBudget(BigDecimal.valueOf(0.00));
+                    userFinancialDetails.setCurrency("RON");
+                    userFinancialDetails.setSalary(BigDecimal.valueOf(0.00));
+                    userFinancialDetails.setSalaryDay(0);
+                    userFinancialDetails.setUser(newUser);
+
+                    newUser.setUserAuthentication(userAuthentication);
+                    newUser.setUserFinancialDetails(userFinancialDetails);
 
                     userRepository.save(newUser);
 

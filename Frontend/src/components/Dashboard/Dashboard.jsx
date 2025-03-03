@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
-
+    const navigate = useNavigate();
     const token = localStorage.getItem("accessToken");
+
     const apiCall = async () => {
         try {
             const response = await fetch(
@@ -27,6 +29,23 @@ function Dashboard() {
         }
     };
 
+    useEffect(() => {
+        if (!token) {
+            navigate("/authentication/login");
+        }
+
+        const handleBackButton = (event) => {
+            event.preventDefault();
+            window.history.pushState(null, "", window.location.href);
+        };
+
+        window.history.pushState(null, "", window.location.href);
+        window.onpopstate = handleBackButton;
+
+        return () => {
+            window.onpopstate = null;
+        };
+    }, [token]);
 
     return (
         <div>

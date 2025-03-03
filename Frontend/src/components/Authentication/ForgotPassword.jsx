@@ -2,26 +2,31 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import ProgressBar from "./ProgressBar";
-import styles from './Authentication.module.css';
+import styles from "./Authentication.module.css";
 
 function ForgotPassword() {
     const [step, setStep] = useState(1);
     const [email, setEmail] = useState("");
     const [securityCode, setSecurityCode] = useState("");
     const [inputSecurityCode, setInputSecurityCode] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
+    const [error, setError] = useState("");
     const [pResendCodeClicked, setpResendCodeClicked] = useState(false);
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
     const navigate = useNavigate();
 
+    const handleGoBackClick = () => {
+        navigate("/authentication/login");
+    };
+
     // Step 1 functions
-    const handleSubmitEmailForm = (event) => {
-        event.preventDefault();
+    const handleSubmitEmailForm = (e) => {
+        e.preventDefault();
         sendSecurityCodeToEmail();
         Swal.fire({
-            title: 'Loading...',
-            text: 'Please wait while we send the email.',
+            title: "Loading...",
+            text: "Please wait while we send the email.",
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
@@ -36,23 +41,29 @@ function ForgotPassword() {
                 {
                     method: "PUT",
                     headers: {
-                        "Content-Type": "text/plain",
+                        "Content-Type": "application/json",
                     },
-                    body: email,
+                    body: JSON.stringify({
+                        email: email
+                    })
                 }
             );
+
             if (response.status === 200) {
                 const responseData = await response.json();
                 setSecurityCode(responseData.message);
+
                 setTimeout(() => {
                     setSecurityCode(null);
                 }, 10 * 60 * 1000);
+
                 Swal.close();
                 setStep(2);
             } else {
                 const responseData = await response.json();
                 showErrorInSwal(responseData.message);
             }
+
         } catch (error) {
             showErrorInSwal(error);
         }
@@ -73,31 +84,31 @@ function ForgotPassword() {
         }
     }, [pResendCodeClicked]);
 
-    const handleSubmitSecurityCodeForm = (event) => {
-        event.preventDefault();
+    const handleSubmitSecurityCodeForm = (e) => {
+        e.preventDefault();
 
         if (securityCode === inputSecurityCode) {
-            setErrorMessage("");
+            setError("");
             setStep(3);
         } else {
-            setErrorMessage(inputSecurityCode + " is not a valid code.");
+            setError(inputSecurityCode + " is not a valid code.");
         }
     }
 
     // Step 3 functions
-    const handleSubmitSetNewPasswordForm = (event) => {
-        event.preventDefault();
+    const handleSubmitSetNewPasswordForm = (e) => {
+        e.preventDefault();
 
         if (password !== confirmPassword) {
-            setErrorMessage('Passwords must be the same.');
+            setError("Passwords must be the same.");
         } else if (password.length < 6) {
-            setErrorMessage('Password must be at least 6 characters long.');
+            setError("Password must be at least 6 characters long.");
         } else {
-            saveNewPassword(email, password);
+            saveNewPassword();
         }
     };
 
-    const saveNewPassword = async (email1, password1) => {
+    const saveNewPassword = async () => {
         try {
             const response = await fetch(
                 "http://localhost:8080/api/authentication/set-new-password",
@@ -106,179 +117,156 @@ function ForgotPassword() {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ email: email1, password: password1 })
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
                 }
             );
+
             if (response.status === 200) {
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Password Changed!',
-                    text: 'Your password has been successfully changed.',
-                    confirmButtonText: 'Back to login'
+                    icon: "success",
+                    title: "Password Changed!",
+                    text: "Your password has been successfully changed.",
+                    allowOutsideClick: false,
+                    confirmButtonText: "Back to login",
+                    confirmButtonColor: "#2ECC71",
                 }).then(() =>
                     navigate("/authentication/login")
                 );
-
             } else {
                 const responseData = await response.json();
-                setErrorMessage(responseData.message);
+                setError(responseData.message);
             }
+
         } catch (error) {
-            setErrorMessage(error);
+            setError(error);
         }
     }
 
     // Error handling functions
     useEffect(() => {
-        if (errorMessage) {
-            const timer = setTimeout(() => setErrorMessage(""), 5000);
+        if (error) {
+            const timer = setTimeout(() => setError(""), 5000);
             return () => clearTimeout(timer);
         }
-    }, [errorMessage]);
+    }, [error]);
 
     const showErrorInSwal = (message) => {
         Swal.close();
         Swal.fire({
-            icon: 'error',
-            title: 'Error',
+            icon: "error",
+            title: "Error",
             text: message,
             showConfirmButton: true,
-            allowOutsideClick: true
+            allowOutsideClick: false,
+            confirmButtonColor: "#E74C3C",
         });
     }
 
+    useEffect(() => {
+        const handleBackButton = (event) => {
+            event.preventDefault();
+            navigate("/authentication/login");
+        };
 
-    if (step === 1) {
-        return (
-            <div className={styles['body-container']}>
-                <div className={styles['div-authentication-container']}>
-                    <h1 className={styles.title}>Expenses Tracker</h1>
+        window.history.pushState(null, "", window.location.href);
+        window.onpopstate = handleBackButton;
 
-                    <form id="formForgotPassword" onSubmit={handleSubmitEmailForm} method="POST">
-                        <ProgressBar step={step} totalSteps={3} />
-                        <hr />
+        return () => {
+            window.onpopstate = null;
+        };
+    }, []);
+
+    return (
+        <div className={styles["div-authentication-container"]}>
+            <h1 className={styles.title}>Expenses Tracker</h1>
+
+            <form
+                onSubmit={
+                    step === 1 ? handleSubmitEmailForm :
+                        step === 2 ? handleSubmitSecurityCodeForm : handleSubmitSetNewPasswordForm}
+                method={step === 1 ? "POST" : step === 3 ? "PUT" : "POST"}>
+
+                <ProgressBar step={step} totalSteps={3} />
+                <hr />
+
+                {step === 1 && (
+                    <>
                         <h2>Forgot password</h2>
-
                         <label htmlFor="email">Email:</label>
                         <input
                             type="email"
-                            id="inputEmail"
+                            id="email"
                             name="email"
                             placeholder="abc@gmail.com"
+                            value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            required />
-
+                            required
+                        />
                         <h4>A security code will be sent to this email address.</h4>
+                    </>
+                )}
 
-                        <div className={styles['div-buttons']} id="divButtons">
-                            <button id="btnSubmitEmail" type="submit"> Submit </button>
-                            <button id="btnGoBack" type="button" className={styles['btn-go-back']}
-                                onClick={() => navigate("/authentication/login")}>
-                                Go back
-                            </button>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-        );
-    }
-
-    if (step === 2) {
-        return (
-            <div className={styles['div-authentication-container']}>
-                <h1 className={styles.title}>Expenses Tracker</h1>
-
-                <form id="formEnterSecurityCode" onSubmit={handleSubmitSecurityCodeForm}>
-                    <ProgressBar step={step} totalSteps={3} />
-                    <hr />
-                    <h2>Enter the 6-digit code from email</h2>
-
-                    <div>
+                {step === 2 && (
+                    <>
+                        <h2>Enter the 6-digit code from email</h2>
                         <label htmlFor="securityCode">Security code:</label>
                         <input
                             type="text"
-                            id="inputSecurityCode"
-                            className={styles['input-security-code']}
+                            id="securityCode"
                             name="securityCode"
                             maxLength={6}
-                            required
                             value={inputSecurityCode}
                             onChange={(e) => setInputSecurityCode(e.target.value)}
+                            required
                         />
-
-                        <p className={styles['p-resend-code']} onClick={handleResendCode}>
+                        <p className={styles["p-resend-code"]} onClick={handleResendCode}>
                             Resend code
                         </p>
-                    </div>
+                    </>
+                )}
 
-                    <span className={styles['span-error']}>{errorMessage}</span>
-
-                    <div className={styles['div-buttons']}>
-                        <button type="submit">Submit</button>
-                        <button
-                            type="button"
-                            className={styles['btn-go-back']}
-                            onClick={() => navigate("/authentication/login")}>
-                            Go back
-                        </button>
-                    </div>
-                </form>
-            </div>
-        );
-    }
-
-    if (step === 3) {
-        return (
-            <div className={styles['div-authentication-container']}>
-                <h1 className={styles.title}>Expenses Tracker</h1>
-
-                <form id="formSetNewPassword" onSubmit={handleSubmitSetNewPasswordForm}>
-                    <ProgressBar step={step} totalSteps={3} />
-                    <hr />
-                    <h2>Write down your new password</h2>
-
-                    <div>
-                        <label htmlFor="password" className={styles['label-password']}>
-                            New Password:
-                        </label>
+                {step === 3 && (
+                    <>
+                        <h2>Write down your new password</h2>
+                        <label htmlFor="password">New Password:</label>
                         <input
                             type="password"
                             id="password"
                             name="password"
-                            required
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)} />
-                    </div>
-
-                    <div>
-                        <label htmlFor="confirmPassword" className={styles['label-password']}>
-                            Confirm New Password:
-                        </label>
+                            autoComplete="new-password"
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                        <label htmlFor="confirmPassword">Confirm New Password:</label>
                         <input
                             type="password"
                             id="confirmPassword"
                             name="confirmPassword"
-                            required
                             value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)} />
-                    </div>
+                            autoComplete="new-password"
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                        />
+                    </>
+                )}
 
-                    <span className={styles['span-error']}>{errorMessage}</span>
+                <span className={styles["span-error"]}>{error}</span>
 
-                    <div className={styles['div-buttons']}>
-                        <button type="submit">Submit</button>
-                        <button
-                            type="button"
-                            className={styles['btn-go-back']}
-                            onClick={() => navigate("/authentication/login")}>
-                            Go back
-                        </button>
-                    </div>
-                </form>
-            </div>
-        );
-    }
+                <div className={styles["div-buttons"]}>
+                    <button type="submit">
+                        Submit
+                    </button>
+                    <button type="button" className={styles["btn-go-back"]} onClick={handleGoBackClick}>
+                        Go back
+                    </button>
+                </div>
+            </form>
+        </div>
+    )
 }
 
 export default ForgotPassword;

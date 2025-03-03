@@ -5,13 +5,13 @@
     justify-content: center;
     align-items: center;
     margin-bottom: 10px;
-    margin-top: 1rem;
 }
 
 .div-authentication-container .title {
-    font-size: 4rem;
+    font-size: 3.5rem;
     color: #2C3E50;
     text-align: center;
+    margin: 2rem;
 }
 
 .div-authentication-container form {
@@ -34,7 +34,6 @@
 
     .div-authentication-container .title {
         font-size: 3rem;
-        margin-top: 10vh;
     }
 
 
@@ -43,14 +42,15 @@
     }
 }
 
-@media (max-width: 408px) {
+@media (max-width: 445px) {
     .div-authentication-container form {
-        width: 100%;
+        width: 80%;
         padding: 15px;
     }
 
     .div-authentication-container .title {
         font-size: 2rem;
+        margin-top: 1rem;
     }
 
 }
@@ -58,7 +58,7 @@
 @media (max-width: 321px) {
 
     .div-authentication-container form {
-        width: 90%;
+        width: 80%;
         padding: 15px;
     }
 
@@ -70,7 +70,17 @@
 
 .div-authentication-container input[type="text"],
 .div-authentication-container input[type="email"],
-.div-authentication-container input[type="password"] {
+.div-authentication-container input[type="password"],
+.div-authentication-container input[type="date"],
+.div-authentication-container input[type="number"] {
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.div-authentication-container select {
     width: 100%;
     padding: 10px;
     margin: 8px 0;
@@ -95,7 +105,8 @@
 
 .div-authentication-container .btn-register,
 .div-authentication-container .btn-go-back,
-.div-authentication-container .btn-login {
+.div-authentication-container .btn-login,
+.div-authentication-container .btn-no-salary {
     background-color: #ECF0F1;
     color: #2ECC71;
     font-weight: bold;
@@ -107,7 +118,8 @@
 
 .div-authentication-container .btn-register:hover,
 .div-authentication-container .btn-go-back:hover,
-.div-authentication-container .btn-login:hover {
+.div-authentication-container .btn-login:hover,
+.div-authentication-container .btn-no-salary:hover {
     opacity: 0.8;
 }
 
@@ -136,7 +148,7 @@
     align-items: center;
 }
 
-.div-authentication-container .input-password {
+.div-authentication-container input {
     outline: none;
     border: none;
     width: 100%;

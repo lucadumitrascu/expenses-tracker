@@ -19,23 +19,23 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponseDto> register(@Valid @RequestBody RegisterDto registerDto) {
-        return authService.register(registerDto);
+    public ResponseEntity<ApiResponseDto> register(@Valid @RequestBody UserCredentialsDto userCredentialsDto) {
+        return authService.register(userCredentialsDto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
-        return authService.login(loginDto);
+    public ResponseEntity<ApiResponseDto> login(@Valid @RequestBody UserCredentialsDto userCredentialsDto) {
+        return authService.login(userCredentialsDto);
     }
 
     @PostMapping("/google-login")
-    public ResponseEntity<ApiResponseDto> googleLogin(@RequestBody GoogleLoginDto googleToken) {
+    public ResponseEntity<ApiResponseDto> googleLogin(@Valid @RequestBody GoogleLoginDto googleToken) {
         return authService.googleLogin(googleToken.getToken());
     }
 
     @PutMapping("/forgot-password")
-    public ResponseEntity<ApiResponseDto> forgotPassword(@RequestBody String email) {
-        return authService.forgotPassword(email);
+    public ResponseEntity<ApiResponseDto> forgotPassword(@RequestBody UserCredentialsDto userCredentialsDto) {
+        return authService.forgotPassword(userCredentialsDto.getEmail());
     }
 
     @PutMapping("/set-new-password")

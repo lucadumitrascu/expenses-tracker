@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./Authentication.module.css";
 import GoogleLoginButton from "../Authentication/GoogleLoginButton";
+import styles from "./Authentication.module.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -10,34 +10,38 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+
   const handleRegisterClick = () => {
-    navigate('/authentication/register');
+    navigate("/authentication/register");
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     try {
       const response = await fetch(
         "http://localhost:8080/api/authentication/login",
         {
-          credentials: "include",
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({
+            email: email,
+            password: password
+          }),
         }
       );
 
       if (response.status === 200) {
         const responseData = await response.json();
         localStorage.setItem("accessToken", responseData.message);
-        console.log(responseData.message);
         navigate("/dashboard");
       } else {
         const responseData = await response.json();
         setError(responseData.message);
       }
+
     } catch (error) {
       setError("Something went wrong.");
     }
@@ -54,8 +58,22 @@ function Login() {
     }
   }, [error]);
 
+  useEffect(() => {
+    const handleBackButton = (event) => {
+      event.preventDefault();
+      navigate("/");
+    };
+
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = handleBackButton;
+
+    return () => {
+      window.onpopstate = null;
+    };
+  }, []);
+
   return (
-    <div className={styles['div-authentication-container']}>
+    <div className={styles["div-authentication-container"]}>
       <h1 className={styles.title}>Expenses Tracker</h1>
 
       <form id="formLogin" onSubmit={handleSubmit} method="POST">
@@ -72,22 +90,22 @@ function Login() {
           required
         />
 
-        <label className={styles['label-password']} htmlFor="password">
+        <label className={styles["label-password"]} htmlFor="password">
           <p>Password:</p>
           <p
             id="pForgotPassword"
-            className={styles['p-forgot-password']}
+            className={styles["p-forgot-password"]}
             onClick={() => navigate("/authentication/forgot-password")}>
             Forgot Password?
           </p>
         </label>
 
-        <div className={styles['password-box']}>
+        <div className={styles["password-box"]}>
           <input
             type={showPassword ? "text" : "password"}
             id="password"
-            className={styles['input-password']}
             name="password"
+            className={styles["input-password"]}
             value={password}
             autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
@@ -96,28 +114,22 @@ function Login() {
 
           <i
             id="iconShowHidePassword"
-            className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}
+            className={`fa-solid ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
             style={{ color: "grey" }}
             onClick={togglePasswordVisibility}></i>
         </div>
 
-        <span className={styles['span-error']}>{error}</span>
+        <span className={styles["span-error"]}>{error}</span>
 
-        <div className={styles['div-buttons']}>
-          <button type="submit" id="btnSubmitLogin">
+        <div className={styles["div-buttons"]}>
+          <button type="submit">
             Login
           </button>
-          <button
-            type="button"
-            id="btnRegister"
-            className={styles['btn-register']}
-            onClick={() => { handleRegisterClick() }}>
+          <button type="button" className={styles["btn-register"]} onClick={handleRegisterClick}>
             Register
           </button>
         </div>
-
         <GoogleLoginButton />
-
       </form>
     </div>
   );
